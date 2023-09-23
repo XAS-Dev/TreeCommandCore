@@ -1,17 +1,20 @@
-package xyz.xasmc.treecommand.node.argument;
+package xyz.xasmc.treecommand.node.type;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import xyz.xasmc.treecommand.node.ParseableNode;
+import xyz.xasmc.treecommand.node.BaseNode;
+import xyz.xasmc.treecommand.node.inter.Parseable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class PlayerNode extends ParseableNode {
+public class PlayerNode extends BaseNode implements Parseable {
     boolean checkPlayerName = false;
+
+    // ===== init =====
 
     public PlayerNode() {
     }
@@ -20,13 +23,7 @@ public class PlayerNode extends ParseableNode {
         this.checkPlayerName = checkPlayerName;
     }
 
-
-    /**
-     * 获取补全数组
-     *
-     * @param args 参数列表
-     * @return 补全数组
-     */
+    // ===== Parseable =====
     @Override
     @Nullable
     public String[] getCompletion(CommandSender sender, String[] args) {
@@ -38,12 +35,6 @@ public class PlayerNode extends ParseableNode {
         return result.toArray(new String[0]);
     }
 
-    /**
-     * 获取改节点占用的指令参数数量
-     *
-     * @param unprocessedArgs 到该节点时还未处理的参数数组
-     * @return 占用参数数量(可以超出参数数组长, - 1 则为错误)
-     */
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
         if (unprocessedArgs.length == 0) return -1;
@@ -53,12 +44,6 @@ public class PlayerNode extends ParseableNode {
         return 1;
     }
 
-    /**
-     * 获取参数处理后的结果
-     *
-     * @param args 参数列表
-     * @return 处理后结果
-     */
     @Nullable
     @Override
     public Player parseArgument(CommandSender sender, String[] args) {

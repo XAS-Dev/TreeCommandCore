@@ -1,25 +1,20 @@
-package xyz.xasmc.treecommand.node.argument;
+package xyz.xasmc.treecommand.node.type;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import xyz.xasmc.treecommand.node.ParseableNode;
+import xyz.xasmc.treecommand.node.BaseNode;
+import xyz.xasmc.treecommand.node.inter.Parseable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class BlockNode extends ParseableNode {
-    /**
-     * 获取补全数组
-     *
-     * @param sender 发送者
-     * @param args   参数列表
-     * @return 补全数组
-     */
+public class BlockNode extends BaseNode implements Parseable {
+    // ===== Parseable =====
     @Nullable
     @Override
     public String[] getCompletion(CommandSender sender, String[] args) {
@@ -54,26 +49,11 @@ public class BlockNode extends ParseableNode {
         return resultList.toArray(new String[0]);
     }
 
-    /**
-     * 获取处理参数数量
-     * 输入参数数组,返回要处理的参数数量
-     *
-     * @param unprocessedArgs 到该节点时还未处理的参数数组
-     * @return 占用参数数量(可以超出参数数组长, - 1 则为错误)
-     */
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
         return 0;
     }
 
-    /**
-     * 处理参数
-     * 处理参数,返回处理后的结果
-     *
-     * @param sender 发送者
-     * @param args   参数数组
-     * @return 处理后结果
-     */
     @Nullable
     @Override
     public Object parseArgument(CommandSender sender, String[] args) {

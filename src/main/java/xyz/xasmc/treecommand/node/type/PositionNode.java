@@ -1,4 +1,4 @@
-package xyz.xasmc.treecommand.node.argument;
+package xyz.xasmc.treecommand.node.type;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,7 +8,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-import xyz.xasmc.treecommand.node.ParseableNode;
+import xyz.xasmc.treecommand.node.BaseNode;
+import xyz.xasmc.treecommand.node.inter.Parseable;
 import xyz.xasmc.treecommand.util.Intersection;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PositionNode extends ParseableNode {
+public class PositionNode extends BaseNode implements Parseable {
     /**
      * 获取补全数组
      *

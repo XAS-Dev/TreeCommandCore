@@ -3,9 +3,9 @@ package xyz.xasmc.treecommand.state;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.node.BaseNode;
-import xyz.xasmc.treecommand.node.ExecutableNode;
-import xyz.xasmc.treecommand.node.ParseableNode;
 import xyz.xasmc.treecommand.node.RootNode;
+import xyz.xasmc.treecommand.node.inter.Executable;
+import xyz.xasmc.treecommand.node.inter.Parseable;
 
 import java.util.*;
 
@@ -16,7 +16,7 @@ public class State {
     protected String label = null; // 指令标签
     protected String[] args = null; // 参数列表
 
-    protected List<ExecutableNode> executableNodes = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
+    protected List<Executable> executableNodes = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
     protected BaseNode lastNode = null; // 结束节点(最后一个成功的节点)
 
     protected StateError errorReason = null; // 错误原因 成功则为null
@@ -26,6 +26,7 @@ public class State {
 
     protected Map<String, Object> state = new HashMap<>();// 状态Map
 
+    // ===== init =====
 
     /**
      * 初始化
@@ -36,7 +37,7 @@ public class State {
         this.rootNode = rootNode;
     }
 
-    // getter setter
+    // ===== getter, setter =====
 
     public RootNode getRootNode() {
         return this.rootNode;
@@ -54,7 +55,7 @@ public class State {
         return this.args;
     }
 
-    public List<ExecutableNode> getExecutableNodes() {
+    public List<Executable> getExecutableNodes() {
         return this.executableNodes;
     }
 
@@ -74,17 +75,15 @@ public class State {
         return this.errorStartIndex;
     }
 
-    public boolean isSuccess() {
-        return this.errorReason == null;
-    }
-
     public int getProcessedArgc() {
         return this.processedArgc;
     }
 
-    //
+    public boolean isSuccess() {
+        return this.errorReason == null;
+    }
 
-    //
+    // ===== state =====
 
     /**
      * 获取状态值
@@ -105,7 +104,7 @@ public class State {
         return this.state;
     }
 
-    //
+    // ===== load =====
 
     /**
      * 加载状态
@@ -121,18 +120,18 @@ public class State {
         BaseNode node = this.rootNode;
         String[] processingArgs = args;
         while (true) {
-            if (node instanceof ExecutableNode) {
+            if (node instanceof Executable) {
                 // 是可执行节点，添加到可执行节点列表
-                this.executableNodes.add((ExecutableNode) node);
+                this.executableNodes.add((Executable) node);
             }
-            if (node.isTerminalNode() && processingArgs.length != 0) {
+            if (node.isLeafNode() && processingArgs.length != 0) {
                 // 没节点,还有参数,错误
                 this.setError(node, StateError.TOO_MANY_ARGS, processedArgc);
                 return false;
             }
             if (processingArgs.length == 0) {
                 // 没参数了
-                if (node.isTerminalNode()) {
+                if (node.isLeafNode()) {
                     // 节点没有子节点
                     this.lastNode = node;// 成功
                     return true;
@@ -142,16 +141,15 @@ public class State {
             // 遍历子节点,寻找匹配的项
             boolean isParseSuccess = false;
             for (BaseNode child : node.getChildren()) {
-                // isParseSuccess = false;
-                int argsQuantity = child.getArgsQuantity(processingArgs);
+                int argsQuantity = child instanceof Parseable ? ((Parseable) child).getArgsQuantity(processingArgs) : 0;
                 if (argsQuantity != -1) {
                     // 匹配成功
                     if (argsQuantity <= processingArgs.length) {
                         // 参数足够
-                        if (child instanceof ParseableNode) {
+                        if (child instanceof Parseable) {
                             // 可处理的
                             // 参数足够,处理参数并添加到状态Map中
-                            this.state.put(child.getNodeName(), ((ParseableNode) child).parseArgument(sender, processingArgs));
+                            this.state.put(child.getNodeName(), ((Parseable) child).parseArgument(sender, processingArgs));
                         }
                         // 重新设置处理中的参数数组
                         this.processedArgc += argsQuantity;
@@ -177,10 +175,10 @@ public class State {
                 }
             }
             if (isParseSuccess) {
-                // 开始处理下一个节点
+                // 开始处理下一层节点
                 continue;
             } else {
-                // 没有匹配的子节点
+                // 子节点匹配失败
                 if (!this.isSuccess()) {
                     // 遍历完了,已经存在错误,返回该错误
                     return false;

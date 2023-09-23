@@ -5,23 +5,23 @@ import xyz.xasmc.treecommand.state.State;
 
 import javax.annotation.Nullable;
 
-public class NextFunction implements Next {
+public class NextImpl implements Next {
 
-    Executor nextExecutor;
+    Executor executor;
     State state;
     Next next = () -> true;
 
-    public NextFunction(@Nullable Executor executor, @NotNull State state) {
-        this.nextExecutor = executor;
+    public NextImpl(@Nullable Executor executor, @NotNull State state) {
+        this.executor = executor;
         this.state = state;
     }
 
-    public void setNext(NextFunction next) {
+    public void setNext(NextImpl next) {
         this.next = next;
     }
 
     @Override
     public boolean apply() {
-        return this.nextExecutor.apply(this.state, this.next);
+        return this.executor.apply(this.state, this.next);
     }
 }

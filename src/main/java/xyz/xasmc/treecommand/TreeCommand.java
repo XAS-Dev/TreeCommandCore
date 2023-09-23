@@ -8,10 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.xasmc.treecommand.function.Executor;
 import xyz.xasmc.treecommand.function.Next;
-import xyz.xasmc.treecommand.function.NextFunction;
+import xyz.xasmc.treecommand.function.NextImpl;
 import xyz.xasmc.treecommand.node.BaseNode;
-import xyz.xasmc.treecommand.node.ExecutableNode;
 import xyz.xasmc.treecommand.node.RootNode;
+import xyz.xasmc.treecommand.node.inter.Executable;
+import xyz.xasmc.treecommand.node.inter.Parseable;
 import xyz.xasmc.treecommand.state.State;
 import xyz.xasmc.treecommand.state.StateError;
 
@@ -56,14 +57,13 @@ public class TreeCommand extends RootNode implements TabExecutor {
      * @return Next链表
      */
     public Next getNextFunction() {
-        NextFunction result = null;
-        NextFunction next = null;
-        List<ExecutableNode> executableNodes = this.state.getExecutableNodes();
-        for (ExecutableNode node : executableNodes) {
+        NextImpl result = null;
+        List<Executable> executableNodes = this.state.getExecutableNodes();
+        for (Executable node : executableNodes) {
             if (result == null) {
-                result = new NextFunction(node.getExecutor(), this.state);
+                result = new NextImpl(node.getExecutor(), this.state);
             } else {
-                next = new NextFunction(node.getExecutor(), this.state);
+                NextImpl next = new NextImpl(node.getExecutor(), this.state);
                 result.setNext(next);
                 result = next;
             }
@@ -142,9 +142,11 @@ public class TreeCommand extends RootNode implements TabExecutor {
         if (errorReason == StateError.WRONG_ARGS) return new ArrayList<>();// 错误的参数 返回空数组
         List<String> completeList = new ArrayList<>();
         for (BaseNode child : this.state.getLastNode().getChildren()) {
-            // 获取子所有子节点的所有补全
+            // 获取所有Parseable Node 的补全并拼接
+            if (!(child instanceof Parseable)) continue;
+            Parseable parseableChild = (Parseable) child;
             String[] needfulArgs = Arrays.copyOfRange(args, this.state.getProcessedArgc(), args.length);// 获取输入的参数
-            String[] childComplete = child.getCompletion(sender, needfulArgs);// 获取补全
+            String[] childComplete = parseableChild.getCompletion(sender, needfulArgs);// 获取补全
             if (childComplete == null) continue;// 没有补全,跳过,处理下一个节点
             completeList.addAll(Arrays.asList(childComplete));// 添加补全
         }

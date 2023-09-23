@@ -34,41 +34,42 @@ Here's an example of how to use TreeCommand in your Java plugin:
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xasmc.treecommand.TreeCommand;
-import xyz.xasmc.treecommand.node.argument.ArgumentType;
+import xyz.xasmc.treecommand.node.type.NodeType;
+import xyz.xasmc.treecommand.node.type.Type;
 
 public class ExamplePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         TreeCommand exampleCommand = new TreeCommand((state, next) -> {
             state.getSender().sendMessage("success");
-            boolean result = next.apply();
+            boolean applied = next.apply();
             return result;
         });
 
         // @formatter:off
          exampleCommand
                  .terminable()
-                 .subCommand("help",(state, next) -> {
-                     boolean result = next.apply();
+                 .addSubCommand("help",(state, next) -> {
+                     boolean applied = next.apply();
                      state.getSender().sendMessage("help");
                      return result;
                  })
                  .end()
-                 .subCommand("player", (state,next)->{
-                     boolean result = next.apply();
+                 .addSubCommand("player", (state,next)->{
+                     boolean applied = next.apply();
                      Player player = (Player) state.getState("player");
                      state.getSender().sendMessage(String.format("player: %s, uuid: %s", player.getName(), player.getUniqueId()));
                      return result;
                  })
-                         .argument(ArgumentType.PLAYER, "player")
+                         .addArgument(NodeType.PLAYER, "player")
                          .end()
                  .end()
-                 .subCommand("pos",((state, next) -> {
-                     boolean result = next.apply();
+                 .addSubCommand("pos",((state, next) -> {
+                     boolean applied = next.apply();
                      state.getSender().sendMessage("success");
                      return result;
                  }))
-                         .argument(ArgumentType.POSITION, "position")
+                         .addArgument(NodeType.POSITION, "position")
                  .end()
          ;
          // @formatter:on

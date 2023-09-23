@@ -1,23 +1,14 @@
 package xyz.xasmc.treecommand.node;
 
-import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.function.Executor;
-import xyz.xasmc.treecommand.node.argument.ArgumentType;
-import xyz.xasmc.treecommand.node.argument.SubCommandNode;
+import xyz.xasmc.treecommand.node.inter.Executable;
+import xyz.xasmc.treecommand.node.type.NodeType;
+import xyz.xasmc.treecommand.node.type.SubCommandNode;
+import xyz.xasmc.treecommand.node.type.TerminalNode;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
-public interface BaseNodeInter {
-
-    /**
-     * 初始化节点,设置节点名和父节点.
-     *
-     * @param name   节点名
-     * @param parent 父节点
-     */
-    void init(String name, BaseNode parent);
-
+public interface NodeInter {
     // ===== setup =====
 
     /**
@@ -27,6 +18,8 @@ public interface BaseNodeInter {
      */
     void addChild(BaseNode child);
 
+    // ===== SubCommand =====
+
     /**
      * 添加子指令.
      * 为该节点添加一个SubCommandNode子节点,返回新建的SubCommandNode.
@@ -34,7 +27,7 @@ public interface BaseNodeInter {
      * @param label 子指令名
      * @return 新建的SubCommandNode子节点
      */
-    SubCommandNode subCommand(String label);
+    SubCommandNode addSubCommand(String label);
 
     /**
      * 添加子指令,返回此节点.
@@ -44,7 +37,7 @@ public interface BaseNodeInter {
      * @param label 子指令名
      * @return this
      */
-    BaseNode subCommandEnd(String label);
+    BaseNode addSubCommandAndEnd(String label);
 
     /**
      * 添加子指令.
@@ -54,7 +47,7 @@ public interface BaseNodeInter {
      * @param executor 执行器
      * @return 新建的SubCommandNode子节点
      */
-    SubCommandNode subCommand(String label, Executor executor);
+    SubCommandNode addSubCommand(String label, Executor executor);
 
     /**
      * 添加子指令,返回此节点.
@@ -65,7 +58,9 @@ public interface BaseNodeInter {
      * @param executor 执行器
      * @return this
      */
-    BaseNode subCommandEnd(String label, Executor executor);
+    BaseNode addSubCommandAndEnd(String label, Executor executor);
+
+    // ===== Argument =====
 
     /**
      * 添加参数.
@@ -75,39 +70,70 @@ public interface BaseNodeInter {
      * @param name     子节点名
      * @return 新建的参数子节点
      */
-    BaseNode argument(BaseNode template, String name);
+    <T extends BaseNode> T addArgument(T template, String name);
 
     /**
      * 添加参数,返回此节点.
-     * this.argument(xxx).end()的简写.
+     * this.type(xxx).end()的简写.
      * 添加一个参数子节点,返回此节点.
      *
      * @param template 子节点模版
      * @param name     子节点名
      * @return this
      */
-    BaseNode argumentEnd(BaseNode template, String name);
+    <T extends BaseNode> BaseNode addArgumentAndEnd(T template, String name);
 
     /**
      * 添加参数.
      * 为该节点添加一个子节点,返回新建的节点.
      *
-     * @param type 子节点类型
-     * @param name 子节点名
+     * @param nodeType 子节点类型
+     * @param name     子节点名
      * @return 新建的参数子节点
      */
-    BaseNode argument(ArgumentType type, String name);
+    BaseNode addArgument(NodeType nodeType, String name);
 
     /**
      * 添加参数,返回此节点.
-     * this.argument(xxx).end()的简写.
+     * this.type(xxx).end()的简写.
      * 添加一个参数子节点,返回此节点.
      *
-     * @param type 子节点类型
-     * @param name 子节点名
+     * @param nodeType 子节点类型
+     * @param name     子节点名
      * @return this
      */
-    BaseNode argumentEnd(ArgumentType type, String name);
+    BaseNode addArgumentAndEnd(NodeType nodeType, String name);
+
+    // ===== EndNode =====
+
+    /**
+     * 添加终止节点
+     *
+     * @return 终止节点
+     */
+    TerminalNode addTerminalNode();
+
+    // ===== ExecutableNode =====
+
+    /**
+     * 添加可执行节点
+     *
+     * @param template 模版
+     * @param name     节点名
+     * @return 可执行节点
+     */
+    Executable addExecuteNode(Executable template, String name);
+
+    /**
+     * 添加可执行节点
+     *
+     * @param executor 执行器
+     * @param name     节点名
+     * @return 可执行节点
+     */
+    Executable addExecuteNode(Executor executor, String name);
+
+    // ===== CommandTree =====
 
     /**
      * 停止设置此节点,返回父节点
@@ -117,22 +143,11 @@ public interface BaseNodeInter {
     BaseNode end();
 
     /**
-     * 设置此节点是否可以作为终点节点.
-     * (如果是终点节点,处理参数时可以在此节点结束)
+     * 是否为可结束节点(是叶节点或实现Terminable接口)
      *
-     * @param flag 是否可作为终点节点
-     * @return this
+     * @return 结果
      */
-    BaseNode terminable(boolean flag);
-
-    /**
-     * 设置此节点可以作为终点节点
-     * (如果是终点节点,处理参数时可以在此节点结束)
-     *
-     * @return this
-     */
-    BaseNode terminable();
-
+    boolean isTerminable();
 
     // ===== Tree =====
 
@@ -172,45 +187,33 @@ public interface BaseNodeInter {
      */
     int getDepth();
 
+    /**
+     * 是否根节点(无父节点)
+     *
+     * @return 结果
+     */
+    boolean isRootNode();
+
+    /**
+     * 是否子节点(不是叶节点或根节点)
+     *
+     * @return 结果
+     */
+    boolean isChildNode();
+
+    /**
+     * 是否为叶节点(无子节点)
+     *
+     * @return 结果
+     */
+    boolean isLeafNode();
+
 
     // ===== getter,setter =====
 
     String getNodeName();
 
-    ArgumentType getType();
-
-    boolean isTerminalNode();
-
-    boolean isTerminable();
-
-    /**
-     * 获取所有可结束的节点
-     *
-     * @return 可结束的节点列表
-     */
-    List<BaseNode> getAllTerminalNode();
-
     BaseNode setNodeName(String name);
 
-
-    // ===== command =====
-
-    /**
-     * 获取补全数组
-     *
-     * @param sender 发送者
-     * @param args   参数列表
-     * @return 补全数组
-     */
-    @Nullable
-    String[] getCompletion(CommandSender sender, String[] args);
-
-    /**
-     * 获取处理参数数量
-     * 输入参数数组,返回要处理的参数数量
-     *
-     * @param unprocessedArgs 到该节点时还未处理的参数数组
-     * @return 占用参数数量(可以超出参数数组长, - 1 则为错误)
-     */
-    int getArgsQuantity(String[] unprocessedArgs);
+    BaseNode setParent(BaseNode parent);
 }

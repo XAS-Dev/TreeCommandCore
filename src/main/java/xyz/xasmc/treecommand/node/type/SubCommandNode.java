@@ -1,41 +1,35 @@
-package xyz.xasmc.treecommand.node.argument;
+package xyz.xasmc.treecommand.node.type;
 
 import org.bukkit.command.CommandSender;
-import xyz.xasmc.treecommand.node.ExecutableNode;
+import xyz.xasmc.treecommand.node.BaseNode;
+import xyz.xasmc.treecommand.node.inter.Executable;
+import xyz.xasmc.treecommand.node.inter.Parseable;
 
 import javax.annotation.Nullable;
 
-public class SubCommandNode extends ExecutableNode {
+public class SubCommandNode extends BaseNode implements Parseable, Executable {
     protected String label = null;
     protected boolean caseSensitive = true;
 
-    /**
-     * 初始化
-     */
+    // ===== init =====
     public SubCommandNode() {
     }
 
-    /**
-     * 初始化
-     */
     public SubCommandNode(String label) {
         this.label = label;
     }
 
-    /**
-     * 初始化
-     */
     public SubCommandNode(String label, boolean caseSensitive) {
         this.label = label;
         this.caseSensitive = caseSensitive;
     }
 
-    /**
-     * 获取补全数组
-     *
-     * @param args 参数列表
-     * @return 补全数组
-     */
+    // ===== Parseable =====
+
+    @Override
+    public Object parseArgument(CommandSender sender, String[] args) {
+        return null;
+    }
 
     @Nullable
     @Override
@@ -43,14 +37,9 @@ public class SubCommandNode extends ExecutableNode {
         return new String[]{this.label};
     }
 
-    /**
-     * 获取改节点占用的指令参数数量
-     *
-     * @param unprocessedArgs 到该节点时还未处理的参数数组
-     * @return 占用参数数量(可以超出参数数组长, - 1 则为错误)
-     */
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
+        if (unprocessedArgs.length == 0) return -1;
         if (this.caseSensitive) return unprocessedArgs[0].equals(this.label) ? 1 : -1;
         else return unprocessedArgs[0].equalsIgnoreCase(this.label) ? 1 : -1;
     }
@@ -67,7 +56,17 @@ public class SubCommandNode extends ExecutableNode {
         this.caseSensitive = caseSensitive;
     }
 
+    /**
+     * 设置子指令标签
+     *
+     * @param label 标签
+     */
+
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getLabel() {
+        return this.label;
     }
 }

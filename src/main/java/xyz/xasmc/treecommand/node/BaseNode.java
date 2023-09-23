@@ -1,88 +1,72 @@
 package xyz.xasmc.treecommand.node;
 
-import org.bukkit.Bukkit;
 import xyz.xasmc.treecommand.function.Executor;
-import xyz.xasmc.treecommand.node.argument.*;
+import xyz.xasmc.treecommand.node.impl.BaseExecutableImpl;
+import xyz.xasmc.treecommand.node.inter.Executable;
+import xyz.xasmc.treecommand.node.inter.Terminable;
+import xyz.xasmc.treecommand.node.type.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseNode implements BaseNodeInter {
+public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
     protected String nodeName = null;
     protected BaseNode parent = null;
-    protected ArgumentType type = null;
     protected List<BaseNode> children = new ArrayList<>();
-    protected boolean terminable = false;
-
-    @Override
-    public void init(String name, BaseNode parent) {
-        this.nodeName = name;
-        this.parent = parent;
-
-        // 遍历路径 判断是否有重复的节点名
-        BaseNode node = this;
-        while (true) {
-            node = node.getParent();
-            if (node == null || node instanceof RootNode) break;
-            if (node.getNodeName().equals((this.getNodeName()))) {
-                Bukkit.getLogger().warning(String.format("[TreeCommand] The instruction node name %s is duplicated within the same branch, which may lead to issues in correctly reading and parsing values.", this.getNodeName()));
-            }
-        }
-
-    }
 
     // ===== setup =====
     @Override
     public void addChild(BaseNode child) {
+        child.setParent(this);
         this.children.add(child);
     }
 
+    // ===== SubCommand =====
     @Override
-    public SubCommandNode subCommand(String label) {
+    public SubCommandNode addSubCommand(String label) {
         SubCommandNode child = new SubCommandNode(label);
-        child.init(null, this);
-        child.setNodeName("SUB_COOMAND:" + label);
+        child.setNodeName("SUB_COMMAND:" + label);
         this.addChild(child);
         return child;
     }
 
     @Override
-    public BaseNode subCommandEnd(String label) {
-        this.subCommand(label);
+    public BaseNode addSubCommandAndEnd(String label) {
+        this.addSubCommand(label);
         return this;
     }
 
     @Override
-    public SubCommandNode subCommand(String label, Executor executor) {
-        SubCommandNode child = this.subCommand(label);
+    public SubCommandNode addSubCommand(String label, Executor executor) {
+        SubCommandNode child = this.addSubCommand(label);
         child.setExecutor(executor);
         return child;
     }
 
     @Override
-    public BaseNode subCommandEnd(String label, Executor executor) {
-        this.subCommand(label, executor);
+    public BaseNode addSubCommandAndEnd(String label, Executor executor) {
+        this.addSubCommand(label, executor);
         return this;
     }
 
+    // ===== Argument =====
 
     @Override
-    public BaseNode argument(BaseNode template, String name) {
-        template.init(name, this);
+    public <T extends BaseNode> T addArgument(T template, String name) {
         this.addChild(template);
         return template;
     }
 
     @Override
-    public BaseNode argumentEnd(BaseNode template, String name) {
-        this.argument(template, name);
+    public <T extends BaseNode> BaseNode addArgumentAndEnd(T template, String name) {
+        this.addArgument(template, name);
         return this;
     }
 
     @Override
-    public BaseNode argument(ArgumentType type, String name) {
+    public BaseNode addArgument(NodeType nodeType, String name) {
         BaseNode child = null;
-        switch (type) {
+        switch (nodeType) {
             case ALL_PLAYER:
                 child = new AllPlayerNode();
                 break;
@@ -104,14 +88,38 @@ public abstract class BaseNode implements BaseNodeInter {
             default:
                 return null;
         }
-        return this.argument(child, name);
+        return this.addArgument(child, name);
     }
 
     @Override
-    public BaseNode argumentEnd(ArgumentType type, String name) {
-        this.argument(type, name);
+    public BaseNode addArgumentAndEnd(NodeType nodeType, String name) {
+        this.addArgument(nodeType, name);
         return this;
     }
+
+    // ===== EndNode =====
+
+    public TerminalNode addTerminalNode() {
+        TerminalNode child = new TerminalNode();
+        child.setNodeName("TERMINAL_NODE:" + child.hashCode());
+        this.addChild(child);
+        return child;
+    }
+
+    // ===== ExecutableNode =====
+
+    public Executable addExecuteNode(Executable template, String name) {
+        template.setNodeName(name);
+        this.addChild((BaseNode) template);
+        return template;
+    }
+
+    public Executable addExecuteNode(Executor executor, String name) {
+        ExecuteNode child = new ExecuteNode();
+        return this.addExecuteNode(child, name);
+    }
+
+    // ===== CommandTree =====
 
     @Override
     public BaseNode end() {
@@ -119,17 +127,11 @@ public abstract class BaseNode implements BaseNodeInter {
     }
 
     @Override
-    public BaseNode terminable(boolean flag) {
-        this.terminable = flag;
-        return this;
+    public boolean isTerminable() {
+        return this.isLeafNode() || this instanceof Terminable;
     }
 
-    @Override
-    public BaseNode terminable() {
-        return this.terminable(true);
-    }
-
-    // ===== tree =====
+    // ===== Tree =====
 
     @Override
     public BaseNode getParent() {
@@ -181,6 +183,21 @@ public abstract class BaseNode implements BaseNodeInter {
         }
     }
 
+    @Override
+    public boolean isRootNode() {
+        return this.parent == null;
+    }
+
+    @Override
+    public boolean isChildNode() {
+        return !this.isRootNode() && !this.isLeafNode();
+    }
+
+    @Override
+    public boolean isLeafNode() {
+        return this.children.isEmpty();
+    }
+
     // ===== getter,setter =====
 
     @Override
@@ -189,48 +206,14 @@ public abstract class BaseNode implements BaseNodeInter {
     }
 
     @Override
-    public ArgumentType getType() {
-        return this.type;
-    }
-
-    @Override
-    public boolean isTerminalNode() {
-        return this.children.isEmpty();
-    }
-
-    @Override
-    public boolean isTerminable() {
-        return this.terminable || this.isTerminalNode();
-    }
-
-
-    /**
-     * 获取所有可结束的节点
-     *
-     * @return 可结束的节点列表
-     */
-    public List<BaseNode> getAllTerminalNode() {
-        List<BaseNode> result = new ArrayList<>();
-        if (this.isTerminalNode()) {
-            result.add(this);
-            return result;
-        }
-        if (this.isTerminable()) {
-            result.add(this);
-        }
-        for (BaseNode child : this.getChildren()) {
-            result.addAll(child.getAllTerminalNode());
-        }
-        return result;
-    }
-
-    @Override
     public BaseNode setNodeName(String name) {
         this.nodeName = name;
         return this;
     }
 
-
-    // ===== command =====
-
+    @Override
+    public BaseNode setParent(BaseNode parent) {
+        this.parent = parent;
+        return this;
+    }
 }

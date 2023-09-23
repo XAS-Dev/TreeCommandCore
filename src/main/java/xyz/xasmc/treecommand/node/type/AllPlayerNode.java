@@ -1,18 +1,20 @@
-package xyz.xasmc.treecommand.node.argument;
+package xyz.xasmc.treecommand.node.type;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import xyz.xasmc.treecommand.node.ParseableNode;
+import xyz.xasmc.treecommand.node.BaseNode;
+import xyz.xasmc.treecommand.node.inter.Parseable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AllPlayerNode extends ParseableNode {
+public class AllPlayerNode extends BaseNode implements Parseable {
     protected boolean checkPlayerName = false;
 
+    // ===== init =====
     public AllPlayerNode() {
     }
 
@@ -20,12 +22,8 @@ public class AllPlayerNode extends ParseableNode {
         this.checkPlayerName = checkPlayerName;
     }
 
-    /**
-     * 获取补全数组
-     *
-     * @param args 参数列表
-     * @return 补全数组
-     */
+    // ===== Parseable =====
+
     @Override
     @Nullable
     public String[] getCompletion(CommandSender sender, String[] args) {
@@ -37,13 +35,6 @@ public class AllPlayerNode extends ParseableNode {
         return result.toArray(new String[0]);
     }
 
-    /**
-     * 获取处理参数数量
-     * 输入参数数组,返回要处理的参数数量
-     *
-     * @param unprocessedArgs 到该节点时还未处理的参数数组
-     * @return 占用参数数量(可以超出参数数组长, - 1 则为错误)
-     */
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
         if (unprocessedArgs.length == 0) return -1;
@@ -57,14 +48,6 @@ public class AllPlayerNode extends ParseableNode {
             if (playerName.equalsIgnoreCase(unprocessedArgs[0])) return 1;// 玩家名在所有玩家列表中
         return -1;// 没有匹配的
     }
-
-    /**
-     * 处理参数
-     * 处理参数,返回处理后的结果
-     *
-     * @param args 参数数组
-     * @return 处理后结果
-     */
 
     @Nullable
     @Override
