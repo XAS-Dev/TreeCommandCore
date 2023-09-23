@@ -39,14 +39,14 @@ import xyz.xasmc.treecommand.node.type.NodeType;
 public class ExampleCommand extends JavaPlugin {
     @Override
     public void onEnable() {
-        TreeCommand ExampleCommand = new TreeCommand(((state, next) -> {
+        TreeCommand exampleCommand = new TreeCommand(((state, next) -> {
             state.getSender().sendMessage("success");
             boolean applied = next.apply();
             return applied;
         }));
 
         // @formatter:off
-        ExampleCommand
+        exampleCommand
                 .addTerminalNode() // 添加一个可结束节点,代表可以在此处结束指令
                 .addSubCommand("help",(state, next) -> { // 添加子指令,返回新建的子指令节点
                     boolean applied = next.apply();
@@ -75,8 +75,8 @@ public class ExampleCommand extends JavaPlugin {
         ;
         // @formatter:on
 
-        this.getCommand("examplecommand").setExecutor(ExampleCommand);
-        this.getCommand("examplecommand").setTabCompleter(ExampleCommand);
+        this.getCommand("examplecommand").setExecutor(exampleCommand);
+        this.getCommand("examplecommand").setTabCompleter(exampleCommand);
     }
 }
 ```
