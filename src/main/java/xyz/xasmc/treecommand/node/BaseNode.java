@@ -7,7 +7,7 @@ import xyz.xasmc.treecommand.node.argument.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseNode implements BaseNodeInterface {
+public abstract class BaseNode implements BaseNodeInter {
     protected String nodeName = null;
     protected BaseNode parent = null;
     protected ArgumentType type = null;

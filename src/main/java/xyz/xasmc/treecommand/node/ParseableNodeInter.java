@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nullable;
 
-public interface ParseableNodeInterface {
+public interface ParseableNodeInter {
     /**
      * 处理参数
      * 处理参数,返回处理后的结果

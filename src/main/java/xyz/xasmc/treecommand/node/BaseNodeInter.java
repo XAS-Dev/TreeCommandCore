@@ -8,7 +8,7 @@ import xyz.xasmc.treecommand.node.argument.SubCommandNode;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public interface BaseNodeInterface {
+public interface BaseNodeInter {
 
     /**
      * 初始化节点,设置节点名和父节点.
