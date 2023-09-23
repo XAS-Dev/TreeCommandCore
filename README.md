@@ -35,47 +35,48 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xasmc.treecommand.TreeCommand;
 import xyz.xasmc.treecommand.node.type.NodeType;
-import xyz.xasmc.treecommand.node.type.Type;
 
-public class ExamplePlugin extends JavaPlugin {
+public class ExampleCommand extends JavaPlugin {
     @Override
     public void onEnable() {
-        TreeCommand exampleCommand = new TreeCommand((state, next) -> {
+        TreeCommand ExampleCommand = new TreeCommand(((state, next) -> {
             state.getSender().sendMessage("success");
             boolean applied = next.apply();
-            return result;
-        });
+            return applied;
+        }));
 
         // @formatter:off
-         exampleCommand
-                 .terminable()
-                 .addSubCommand("help",(state, next) -> {
-                     boolean applied = next.apply();
-                     state.getSender().sendMessage("help");
-                     return result;
-                 })
-                 .end()
-                 .addSubCommand("player", (state,next)->{
-                     boolean applied = next.apply();
-                     Player player = (Player) state.getState("player");
-                     state.getSender().sendMessage(String.format("player: %s, uuid: %s", player.getName(), player.getUniqueId()));
-                     return result;
-                 })
-                         .addArgument(NodeType.PLAYER, "player")
-                         .end()
-                 .end()
-                 .addSubCommand("pos",((state, next) -> {
-                     boolean applied = next.apply();
-                     state.getSender().sendMessage("success");
-                     return result;
-                 }))
-                         .addArgument(NodeType.POSITION, "position")
-                 .end()
-         ;
-         // @formatter:on
+        ExampleCommand
+                .addTerminalNode() // 添加一个可结束节点,代表可以在此处结束指令
+                .addSubCommand("help",(state, next) -> { // 添加子指令,返回新建的子指令节点
+                    boolean applied = next.apply();
+                    state.getSender().sendMessage("help");
+                    return applied;
+                }).end() // 使用end()返回父节点
+                .addSubCommandAndEnd("awa",((state, next) -> {
+                    boolean applied = next.apply();
+                    state.getSender().sendMessage("awa");
+                    return applied;
+                })) // 简化写法,添加子指令,返回原节点
+                .addSubCommand("player",(state,next)->{
+                    boolean applied = next.apply();
+                    Player player = (Player) state.getState("player");
+                    player.chat("qwq");
+                    return applied;
+                })
+                .addArgument(NodeType.PLAYER,"player").end() // 为子指令添加参数;使用end()返回父节点
+                .end() // 使用end()返回父节点
+                .addSubCommand("pos",((state, next) -> {
+                    boolean applied = next.apply();
+                    state.getSender().sendMessage("success");
+                    return applied;
+                }))
+                .addArgumentAndEnd(NodeType.POSITION,"position") // 简化写法,添加参数,返回源节点
+        ;
+        // @formatter:on
 
-        this.getCommand("examplecommand").setExecutor(exampleCommand);
-        this.getCommand("examplecommand").setTabCompleter(exampleCommand);
+        this.getCommand("examplecommand").setExecutor(ExampleCommand);
+        this.getCommand("examplecommand").setTabCompleter(ExampleCommand);
     }
 }
 ```
