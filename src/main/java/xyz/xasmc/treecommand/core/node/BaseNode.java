@@ -70,9 +70,9 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
             case ALL_PLAYER:
                 child = new AllPlayerNode();
                 break;
-            // case Block:
-            //     child = new BlockNode();
-            //     break;
+            case BLOCK:
+                child = new BlockNode();
+                break;
             // case Enum:
             //     child = new EnumNode();
             //     break;

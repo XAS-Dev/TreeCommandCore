@@ -43,6 +43,14 @@ public class TestTreeCommand extends JavaPlugin {
                     return applied;
                 }))
                         .addArgumentAndEnd(NodeType.POSITION,"position") // 简化写法,添加参数,返回源节点
+                .end()
+                .addSubCommand("block",((state, next) -> {
+                    boolean applied = next.apply();
+                    state.getSender().sendMessage("success");
+                    return applied;
+                }))
+                .addArgumentAndEnd(NodeType.POSITION,"location") // 简化写法,添加参数,返回源节点
+                .end()
         ;
         // @formatter:on
 
