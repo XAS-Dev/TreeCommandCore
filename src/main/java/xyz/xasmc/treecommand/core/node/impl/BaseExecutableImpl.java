@@ -4,9 +4,9 @@ import xyz.xasmc.treecommand.core.node.inter.Executable;
 import xyz.xasmc.treecommand.core.function.Executor;
 
 public abstract class BaseExecutableImpl {
+    // 不 implements Executable 因为BaseNode会继承该类导致所有节点均为 Executable
     protected Executor executor = (state, next) -> {
-        boolean applied = next.apply();
-        return applied;
+        return next.apply();
     };
 
     public Executor getExecutor() {

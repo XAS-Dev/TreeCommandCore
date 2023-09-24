@@ -19,12 +19,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PositionNode extends BaseNode implements Parseable {
-    /**
-     * 获取补全数组
-     *
-     * @param args 参数列表
-     * @return 补全数组
-     */
     @Nullable
     @Override
     public String[] getCompletion(CommandSender sender, String[] args) {
@@ -57,13 +51,6 @@ public class PositionNode extends BaseNode implements Parseable {
         return resultList.toArray(new String[0]);
     }
 
-    /**
-     * 获取处理参数数量
-     * 输入参数数组,返回要处理的参数数量
-     *
-     * @param unprocessedArgs 到该节点时还未处理的参数数组
-     * @return 占用参数数量(可以超出参数数组长, - 1 则为错误)
-     */
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
         if (unprocessedArgs.length == 0) return -1;
@@ -75,13 +62,6 @@ public class PositionNode extends BaseNode implements Parseable {
         return result ? 3 : -1;
     }
 
-    /**
-     * 处理参数
-     * 处理参数,返回处理后的结果
-     *
-     * @param args 参数数组
-     * @return 处理后结果
-     */
     @Nullable
     @Override
     public Location parseArgument(CommandSender sender, String[] args) {
@@ -103,7 +83,7 @@ public class PositionNode extends BaseNode implements Parseable {
             relativeArray[i] = relative;
             valueArray[i] = value;
         }
-        //
+        // 处理数值
         boolean xRelative = relativeArray[0];
         boolean yRelative = relativeArray[1];
         boolean zRelative = relativeArray[2];
