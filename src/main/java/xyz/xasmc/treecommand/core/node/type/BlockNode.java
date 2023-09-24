@@ -22,7 +22,6 @@ public class BlockNode extends BaseNode implements Parseable {
     @Nullable
     @Override
     public String[] getCompletion(CommandSender sender, String[] args) {
-        int argc = 0;
         String[] resultArray = {"~", "~", "~"};
         if (sender instanceof Player) { // 发送者是玩家
             Player player = (Player) sender;
@@ -35,11 +34,11 @@ public class BlockNode extends BaseNode implements Parseable {
             }
         }
         Pattern numberPattern = Pattern.compile("^(~)?([+-][0-9]+|[0-9]*)?$");
-        for (int i = 0; i < args.length && i < 3; i++) {
+        for (int i = 0; i < Math.min(args.length, 3); i++) {
+            // 匹配参数是否合法
             if (args[i].isEmpty()) break;
-            if (!numberPattern.matcher(args[i]).matches()) return null;
+            if (!numberPattern.matcher(args[i]).matches()) return null; // 不匹配,返回null
             resultArray[i] = args[i];
-            argc++;
         }
         // 返回结果
         // eg.
