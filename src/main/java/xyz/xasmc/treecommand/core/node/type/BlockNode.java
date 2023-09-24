@@ -34,7 +34,7 @@ public class BlockNode extends BaseNode implements Parseable {
                 resultArray[2] = String.format("%.0f", blockLocation.getZ());
             }
         }
-        Pattern numberPattern = Pattern.compile("^(~?)((?:[+-][0-9]+|[0-9]*)?)$");
+        Pattern numberPattern = Pattern.compile("^(~)?([+-][0-9]+|[0-9]*)?$");
         for (int i = 0; i < args.length && i < 3; i++) {
             if (args[i].isEmpty()) break;
             if (!numberPattern.matcher(args[i]).matches()) return null;
@@ -56,7 +56,7 @@ public class BlockNode extends BaseNode implements Parseable {
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
         if (unprocessedArgs.length == 0) return -1;
-        Pattern numberPattern = Pattern.compile("^(~?)((?:[+-][0-9]+|[0-9]*)?)$");
+        Pattern numberPattern = Pattern.compile("^(~)?([+-][0-9]+|[0-9]*)?$");
         boolean result = true;
         for (int i = 0; i < 3 && i < unprocessedArgs.length; i++) {
             result &= numberPattern.matcher(unprocessedArgs[i]).matches();
@@ -68,7 +68,7 @@ public class BlockNode extends BaseNode implements Parseable {
     @Override
     public Block parseArgument(CommandSender sender, String[] args) {
         Block result = null;
-        Pattern numberPattern = Pattern.compile("^(~?)((?:[+-][0-9]+|[0-9]*)?)$");
+        Pattern numberPattern = Pattern.compile("^(~)?([+-][0-9]+|[0-9]*)?$");
         boolean[] relativeArray = new boolean[3];
         int[] valueArray = new int[3];
         boolean relative;
