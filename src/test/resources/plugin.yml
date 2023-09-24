@@ -1,6 +1,6 @@
 name: TestTreeCommand
 version: 0.0.1
-main: xyz.xasmc.testtreecommand.TestTreeCommand
+main: xyz.xasmc.treecommand.test.TestTreeCommand
 api-version: "1.20"
 authors:
   - XiYang6666

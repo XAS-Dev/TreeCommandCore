@@ -1,52 +1,23 @@
-# TreeCommandCore
+package xyz.xasmc.treecommand.test;
 
-A Bukkit plugin dependency for simplifying the definition of commands used within Bukkit plugins.
-
-## Getting Started
-
-To use TreeCommandCore in your Spigot plugin project, you can add it as a dependency in your `pom.xml` file. First, add the XAS repository to your repositories section:
-
-```xml
-        <repository>
-            <id>xas</id>
-            <url>https://maven.xasmc.xyz/repository/xas/</url>
-        </repository>
-```
-
-Next, add TreeCommandCore as a dependency:
-
-```xml
-        <dependency>
-            <groupId>xyz.xasmc</groupId>
-            <artifactId>TreeCommandCore</artifactId>
-            <version>FILL_IN_THE_VERSION_NUMBER_HERE</version>
-            <scope>compile</scope>
-        </dependency>
-```
-
-Be sure to replace `FILL_IN_THE_VERSION_NUMBER_HERE` with the actual version number you want to use.
-
-## Usage Example
-
-Here's an example of how to use TreeCommandCore in your Java plugin:
-
-```java
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xasmc.treecommand.core.TreeCommand;
-import type.node.xyz.xasmc.treecommand.core.NodeType;
+import xyz.xasmc.treecommand.core.node.type.NodeType;
 
-public class ExampleCommand extends JavaPlugin {
+public class TestTreeCommand extends JavaPlugin {
     @Override
     public void onEnable() {
-        TreeCommand exampleCommand = new TreeCommand(((state, next) -> {
+        getLogger().info("TestTreeCommand 已加载");
+
+        TreeCommand testTreeCommand = new TreeCommand(((state, next) -> {
             state.getSender().sendMessage("success");
             boolean applied = next.apply();
             return applied;
         }));
 
         // @formatter:off
-        exampleCommand
+        testTreeCommand
                 .addTerminalNode() // 添加一个可结束节点,代表可以在此处结束指令
                 .addSubCommand("help",(state, next) -> { // 添加子指令,返回新建的子指令节点
                     boolean applied = next.apply();
@@ -64,21 +35,23 @@ public class ExampleCommand extends JavaPlugin {
                     player.chat("qwq");
                     return applied;
                 })
-                .addArgument(NodeType.PLAYER,"player").end() // 为子指令添加参数;使用end()返回父节点
+                        .addArgument(NodeType.PLAYER,"player").end() // 为子指令添加参数;使用end()返回父节点
                 .end() // 使用end()返回父节点
                 .addSubCommand("pos",((state, next) -> {
                     boolean applied = next.apply();
                     state.getSender().sendMessage("success");
                     return applied;
                 }))
-                .addArgumentAndEnd(NodeType.POSITION,"position") // 简化写法,添加参数,返回源节点
+                        .addArgumentAndEnd(NodeType.POSITION,"position") // 简化写法,添加参数,返回源节点
         ;
         // @formatter:on
 
-        this.getCommand("examplecommand").setExecutor(exampleCommand);
-        this.getCommand("examplecommand").setTabCompleter(exampleCommand);
+        this.getCommand("testtreecommand").setExecutor(testTreeCommand);
+        this.getCommand("testtreecommand").setTabCompleter(testTreeCommand);
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 }
-```
-
-Feel free to customize and expand upon this example to suit your specific plugin's needs.
