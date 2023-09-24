@@ -109,15 +109,15 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
 
     // ===== ExecutableNode =====
 
-    public Executable addExecuteNode(Executable template, String name) {
-        template.setNodeName(name);
+    public Executable addExecuteNode(Executable template) {
+        template.setNodeName("EXECUTE_NODE:" + template.hashCode());
         this.addChild((BaseNode) template);
         return template;
     }
 
-    public Executable addExecuteNode(Executor executor, String name) {
+    public Executable addExecuteNode(Executor executor) {
         ExecuteNode child = new ExecuteNode();
-        return this.addExecuteNode(child, name);
+        return this.addExecuteNode(child);
     }
 
     // ===== CommandTree =====

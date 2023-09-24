@@ -122,7 +122,7 @@ public interface NodeInter {
      * @param name     节点名
      * @return 可执行节点
      */
-    Executable addExecuteNode(Executable template, String name);
+    Executable addExecuteNode(Executable template);
 
     /**
      * 添加可执行节点
@@ -131,7 +131,7 @@ public interface NodeInter {
      * @param name     节点名
      * @return 可执行节点
      */
-    Executable addExecuteNode(Executor executor, String name);
+    Executable addExecuteNode(Executor executor);
 
     // ===== CommandTree =====
 

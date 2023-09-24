@@ -96,6 +96,16 @@ public class State {
     }
 
     /**
+     * 获取状态值
+     *
+     * @param name 键
+     * @return 值
+     */
+    public <T> T getState(String name, Class<T> type) {
+        return type.cast(this.state.get(name));
+    }
+
+    /**
      * 获取状态Map
      *
      * @return 状态Map
