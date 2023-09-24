@@ -53,6 +53,7 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
 
     @Override
     public <T extends BaseNode> T addArgument(T template, String name) {
+        template.setNodeName(name);
         this.addChild(template);
         return template;
     }
