@@ -117,6 +117,7 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
 
     public Executable addExecuteNode(Executor executor) {
         ExecuteNode child = new ExecuteNode();
+        child.setExecutor(executor);
         return this.addExecuteNode(child);
     }
 

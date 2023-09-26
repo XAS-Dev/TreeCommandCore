@@ -6,18 +6,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.xasmc.treecommand.core.function.Executor;
 import xyz.xasmc.treecommand.core.function.Next;
 import xyz.xasmc.treecommand.core.function.NextImpl;
 import xyz.xasmc.treecommand.core.node.BaseNode;
-import xyz.xasmc.treecommand.core.node.inter.Executable;
-import xyz.xasmc.treecommand.core.state.State;
-import xyz.xasmc.treecommand.core.function.Executor;
 import xyz.xasmc.treecommand.core.node.RootNode;
+import xyz.xasmc.treecommand.core.node.inter.Executable;
 import xyz.xasmc.treecommand.core.node.inter.Parseable;
-import xyz.xasmc.treecommand.core.state.StateError;
+import xyz.xasmc.treecommand.core.state.State;
+import xyz.xasmc.treecommand.core.state.StateException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TreeCommand extends RootNode implements TabExecutor {
@@ -28,7 +29,7 @@ public class TreeCommand extends RootNode implements TabExecutor {
     }
 
     public TreeCommand(Executor executor) {
-        this.executor = executor;
+        this.setExecutor(executor);
     }
 
     @Override
@@ -58,7 +59,8 @@ public class TreeCommand extends RootNode implements TabExecutor {
      */
     public Next getNextFunction() {
         NextImpl result = null;
-        List<Executable> executableNodes = this.state.getExecutableNodes();
+        List<Executable> executableNodes = new ArrayList<>(this.state.getExecutableNodes());
+        Collections.reverse(executableNodes);
         for (Executable node : executableNodes) {
             if (result == null) {
                 result = new NextImpl(node.getExecutor(), this.state);
@@ -79,24 +81,24 @@ public class TreeCommand extends RootNode implements TabExecutor {
         CommandSender sender = this.state.getSender();
         String label = this.state.getLabel();
         String[] args = this.state.getArgs();
-        switch (this.state.getErrorReason()) {
+        switch (this.state.getException()) {
             case TOO_MANY_ARGS:
                 sender.sendMessage(ChatColor.RED + "错误的命令参数");
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getErrorStartIndex()));
+                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getFailedStartIndex()));
                 break;
             case TOO_FEW_ARGS:
                 sender.sendMessage(ChatColor.RED + "未知或不完整的指令");
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getErrorStartIndex()));
+                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getFailedStartIndex()));
                 break;
             case WRONG_ARGS:
                 this.state.getLastNode().getChildren().get(0);
                 sender.sendMessage(ChatColor.RED + "需要...");// 未知的..类型
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getErrorStartIndex()));
+                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getFailedStartIndex()));
                 break;
             case NOT_COMPLETE:
                 this.state.getLastNode().getChildren().get(0);
                 sender.sendMessage(ChatColor.RED + "不完整（需要...个...）");// 未知的..类型
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getErrorStartIndex()));
+                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getFailedStartIndex()));
                 break;
         }
 
@@ -136,10 +138,10 @@ public class TreeCommand extends RootNode implements TabExecutor {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         this.state.load(Arrays.copyOfRange(args, 0, args.length - 1), sender, label);
         String lastArg = args[args.length - 1];
-        StateError errorReason = this.state.getErrorReason();
+        StateException errorReason = this.state.getException();
         // Bukkit.getLogger().info(String.valueOf(this.state.getErrorReason() == StateError.TOO_FEW_ARGS || this.state.getErrorReason() == StateError.NOT_COMPLETE || this.state.isSuccess()) + " " + (errorReason == null ? "null" : errorReason.name()));
         // if (this.state.getErrorReason() == StateError.TOO_FEW_ARGS || this.state.getErrorReason() == StateError.NOT_COMPLETE || this.state.isSuccess()) { // 参数不够或成功时触发补全
-        if (errorReason == StateError.WRONG_ARGS) return new ArrayList<>();// 错误的参数 返回空数组
+        if (errorReason == StateException.WRONG_ARGS) return new ArrayList<>();// 错误的参数 返回空数组
         List<String> completeList = new ArrayList<>();
         for (BaseNode child : this.state.getLastNode().getChildren()) {
             // 获取所有Parseable Node 的补全并拼接
