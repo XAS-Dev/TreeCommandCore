@@ -1,6 +1,6 @@
 package xyz.xasmc.treecommand.core.state;
 
-public enum StateError {
+public enum StateException {
     TOO_MANY_ARGS,
     TOO_FEW_ARGS,
     WRONG_ARGS,

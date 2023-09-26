@@ -19,9 +19,9 @@ public class State {
     protected List<Executable> executableNodes = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
     protected BaseNode lastNode = null; // 结束节点(最后一个成功的节点)
 
-    protected StateError errorReason = null; // 错误原因 成功则为null
-    protected BaseNode errorNode = null; // 错误节点
-    protected int errorStartIndex = -1;// 错误开始位置
+    protected StateException exception = null; // 错误原因 成功则为null
+    protected BaseNode failedNode = null; // 错误节点
+    protected int failedStartIndex = -1;// 错误开始位置
     protected int processedArgc = 0;// 处理完的参数数量
 
     protected Map<String, Object> state = new HashMap<>();// 状态Map
@@ -63,16 +63,16 @@ public class State {
         return this.lastNode;
     }
 
-    public StateError getErrorReason() {
-        return this.errorReason;
+    public StateException getException() {
+        return this.exception;
     }
 
-    public BaseNode getErrorNode() {
-        return this.errorNode;
+    public BaseNode getFailedNode() {
+        return this.failedNode;
     }
 
-    public int getErrorStartIndex() {
-        return this.errorStartIndex;
+    public int getFailedStartIndex() {
+        return this.failedStartIndex;
     }
 
     public int getProcessedArgc() {
@@ -80,7 +80,7 @@ public class State {
     }
 
     public boolean isSuccess() {
-        return this.errorReason == null;
+        return this.exception == null;
     }
 
     // ===== state =====
@@ -136,7 +136,7 @@ public class State {
             }
             if (node.isLeafNode() && processingArgs.length != 0) {
                 // 没节点,还有参数,错误
-                this.setError(node, StateError.TOO_MANY_ARGS, processedArgc);
+                this.setError(node, StateException.TOO_MANY_ARGS, processedArgc);
                 return false;
             }
             if (processingArgs.length == 0) {
@@ -174,7 +174,7 @@ public class State {
                         // 参数不足,不完整
                         // 添加错误信息,不返回错误
                         // 继续遍历下面的节点,如果后面的节点匹配成功会覆盖错误信息
-                        this.setError(node, child, StateError.NOT_COMPLETE, processedArgc);
+                        this.setError(node, child, StateException.NOT_COMPLETE, processedArgc);
                         // 下一个节点
                         Bukkit.getLogger().info(child.getNodeName() + " 不完整");
                         continue;// 不完整,换下一个子节点
@@ -203,11 +203,11 @@ public class State {
                     }
                     // 节点不可结束
                     // 参数过少
-                    this.setError(node, StateError.TOO_FEW_ARGS, processedArgc);
+                    this.setError(node, StateException.TOO_FEW_ARGS, processedArgc);
                 } else {
                     // 还有未处理的参数
                     // 错误的参数
-                    this.setError(node, StateError.WRONG_ARGS, processedArgc);
+                    this.setError(node, StateException.WRONG_ARGS, processedArgc);
                 }
                 return false;
             }
@@ -223,24 +223,24 @@ public class State {
         this.executableNodes = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
         this.lastNode = null; // 结束节点
 
-        this.errorReason = null; // 错误原因 成功则为null
-        this.errorNode = null; // 错误节点
-        this.errorStartIndex = -1;// 错误开始位置
+        this.exception = null; // 错误原因 成功则为null
+        this.failedNode = null; // 错误节点
+        this.failedStartIndex = -1;// 错误开始位置
         this.processedArgc = 0;// 处理完的参数数量
 
         this.state = new HashMap<>();// 状态Map
     }
 
-    protected void setError(BaseNode lastNode, BaseNode errorNode, StateError errorReason, int errorStartIndex) {
+    protected void setError(BaseNode lastNode, BaseNode errorNode, StateException errorReason, int errorStartIndex) {
         this.lastNode = lastNode;
-        this.errorNode = errorNode;
-        this.errorReason = errorReason;
-        this.errorStartIndex = errorStartIndex;
+        this.failedNode = errorNode;
+        this.exception = errorReason;
+        this.failedStartIndex = errorStartIndex;
     }
 
-    protected void setError(BaseNode lastNode, StateError errorReason, int errorStartIndex) {
+    protected void setError(BaseNode lastNode, StateException errorReason, int errorStartIndex) {
         this.lastNode = lastNode;
-        this.errorReason = errorReason;
-        this.errorStartIndex = errorStartIndex;
+        this.exception = errorReason;
+        this.failedStartIndex = errorStartIndex;
     }
 }
