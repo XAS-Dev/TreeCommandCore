@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.xasmc.treecommand.core.node.BaseNode;
-import xyz.xasmc.treecommand.core.node.inter.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parseable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

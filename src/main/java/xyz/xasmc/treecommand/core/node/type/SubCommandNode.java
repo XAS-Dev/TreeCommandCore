@@ -2,8 +2,8 @@ package xyz.xasmc.treecommand.core.node.type;
 
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
-import xyz.xasmc.treecommand.core.node.inter.Executable;
-import xyz.xasmc.treecommand.core.node.inter.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Executable;
+import xyz.xasmc.treecommand.core.node.marker.Parseable;
 
 import javax.annotation.Nullable;
 

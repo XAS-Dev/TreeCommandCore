@@ -4,8 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
-import xyz.xasmc.treecommand.core.node.inter.Executable;
-import xyz.xasmc.treecommand.core.node.inter.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Executable;
+import xyz.xasmc.treecommand.core.node.marker.Parseable;
 
 import java.util.*;
 

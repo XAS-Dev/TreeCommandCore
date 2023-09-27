@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import xyz.xasmc.treecommand.core.node.BaseNode;
-import xyz.xasmc.treecommand.core.node.inter.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parseable;
 import xyz.xasmc.treecommand.core.util.Intersection;
 
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PositionNode extends BaseNode implements Parseable {
+    // ===== Parseable =====
     @Nullable
     @Override
     public String[] getCompletion(CommandSender sender, String[] args) {
@@ -56,7 +57,7 @@ public class PositionNode extends BaseNode implements Parseable {
         if (unprocessedArgs.length == 0) return -1;
         Pattern numberPattern = Pattern.compile("^(~)?([-+]?(?:\\d*\\.\\d+|\\d+\\.\\d*|\\d+))?$");
         boolean result = true;
-        for (int i = 0; i < 3 && i < unprocessedArgs.length; i++) {
+        for (int i = 0; i < Math.min(3, unprocessedArgs.length); i++) {
             result &= numberPattern.matcher(unprocessedArgs[i]).matches();
         }
         return result ? 3 : -1;

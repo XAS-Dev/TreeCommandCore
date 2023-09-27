@@ -1,7 +1,7 @@
 package xyz.xasmc.treecommand.core.node.type;
 
 import xyz.xasmc.treecommand.core.node.BaseNode;
-import xyz.xasmc.treecommand.core.node.inter.Executable;
+import xyz.xasmc.treecommand.core.node.marker.Executable;
 
 /**
  * 用于在指令树中插入一个执行器

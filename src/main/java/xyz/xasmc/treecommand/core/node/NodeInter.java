@@ -1,10 +1,10 @@
 package xyz.xasmc.treecommand.core.node;
 
-import xyz.xasmc.treecommand.core.node.inter.Executable;
+import xyz.xasmc.treecommand.core.function.Executor;
+import xyz.xasmc.treecommand.core.node.marker.Executable;
 import xyz.xasmc.treecommand.core.node.type.NodeType;
 import xyz.xasmc.treecommand.core.node.type.SubCommandNode;
 import xyz.xasmc.treecommand.core.node.type.TerminalNode;
-import xyz.xasmc.treecommand.core.function.Executor;
 
 import java.util.List;
 
@@ -119,7 +119,6 @@ public interface NodeInter {
      * 添加可执行节点
      *
      * @param template 模版
-     * @param name     节点名
      * @return 可执行节点
      */
     Executable addExecuteNode(Executable template);
@@ -128,7 +127,6 @@ public interface NodeInter {
      * 添加可执行节点
      *
      * @param executor 执行器
-     * @param name     节点名
      * @return 可执行节点
      */
     Executable addExecuteNode(Executor executor);

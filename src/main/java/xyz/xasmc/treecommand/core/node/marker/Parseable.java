@@ -1,4 +1,4 @@
-package xyz.xasmc.treecommand.core.node.inter;
+package xyz.xasmc.treecommand.core.node.marker;
 
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.NodeInter;

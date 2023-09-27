@@ -11,8 +11,8 @@ import xyz.xasmc.treecommand.core.function.Next;
 import xyz.xasmc.treecommand.core.function.NextImpl;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
-import xyz.xasmc.treecommand.core.node.inter.Executable;
-import xyz.xasmc.treecommand.core.node.inter.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Executable;
+import xyz.xasmc.treecommand.core.node.marker.Parseable;
 import xyz.xasmc.treecommand.core.state.State;
 import xyz.xasmc.treecommand.core.state.StateException;
 

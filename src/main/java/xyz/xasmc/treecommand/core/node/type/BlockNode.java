@@ -9,7 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import xyz.xasmc.treecommand.core.node.BaseNode;
-import xyz.xasmc.treecommand.core.node.inter.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parseable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,6 @@ public class BlockNode extends BaseNode implements Parseable {
     @Nullable
     @Override
     public String[] getCompletion(CommandSender sender, String[] args) {
-        int argc = 0;
         String[] resultArray = {"~", "~", "~"};
         if (sender instanceof Player) { // 发送者是玩家
             Player player = (Player) sender;
@@ -35,11 +34,10 @@ public class BlockNode extends BaseNode implements Parseable {
             }
         }
         Pattern numberPattern = Pattern.compile("^(~)?([+-][0-9]+|[0-9]*)?$");
-        for (int i = 0; i < args.length && i < 3; i++) {
+        for (int i = 0; i < Math.min(args.length, 3); i++) {
             if (args[i].isEmpty()) break;
             if (!numberPattern.matcher(args[i]).matches()) return null;
             resultArray[i] = args[i];
-            argc++;
         }
         // 返回结果
         // eg.
@@ -58,7 +56,7 @@ public class BlockNode extends BaseNode implements Parseable {
         if (unprocessedArgs.length == 0) return -1;
         Pattern numberPattern = Pattern.compile("^(~)?([+-][0-9]+|[0-9]*)?$");
         boolean result = true;
-        for (int i = 0; i < 3 && i < unprocessedArgs.length; i++) {
+        for (int i = 0; i < Math.min(3, unprocessedArgs.length); i++) {
             result &= numberPattern.matcher(unprocessedArgs[i]).matches();
         }
         return result ? 3 : -1;

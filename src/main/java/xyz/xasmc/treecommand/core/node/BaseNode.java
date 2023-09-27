@@ -1,9 +1,9 @@
 package xyz.xasmc.treecommand.core.node;
 
 import xyz.xasmc.treecommand.core.function.Executor;
-import xyz.xasmc.treecommand.core.node.impl.BaseExecutableImpl;
-import xyz.xasmc.treecommand.core.node.inter.Executable;
-import xyz.xasmc.treecommand.core.node.inter.Terminable;
+import xyz.xasmc.treecommand.core.node.marker.BaseExecutableImpl;
+import xyz.xasmc.treecommand.core.node.marker.Executable;
+import xyz.xasmc.treecommand.core.node.marker.Terminable;
 import xyz.xasmc.treecommand.core.node.type.*;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
 
     @Override
     public BaseNode addArgument(NodeType nodeType, String name) {
-        BaseNode child = null;
+        BaseNode child;
         switch (nodeType) {
             case ALL_PLAYER:
                 child = new AllPlayerNode();
