@@ -1,5 +1,6 @@
 package xyz.xasmc.treecommand.core.node.impl;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.config.SubCommandNodeConfig;
@@ -9,7 +10,13 @@ import xyz.xasmc.treecommand.core.node.marker.Parseable;
 import javax.annotation.Nullable;
 
 public class SubCommandNode extends BaseNode implements Parseable, Executable {
-    protected SubCommandNodeConfig config = null;
+    protected SubCommandNodeConfig config;
+
+    @Override
+    public void initConfig() {
+        Bukkit.getLogger().info("init cfg");
+        this.config = (SubCommandNodeConfig) super.config;
+    }
 
     // ===== Parseable =====
 

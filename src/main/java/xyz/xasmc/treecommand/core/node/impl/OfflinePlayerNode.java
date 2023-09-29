@@ -12,6 +12,11 @@ import javax.annotation.Nullable;
 public class OfflinePlayerNode extends BaseNode implements Parseable {
     protected OfflinePlayerNodeConfig config;
 
+    @Override
+    public void initConfig() {
+        this.config = (OfflinePlayerNodeConfig) super.config;
+    }
+
     // ===== Parseable =====
 
     @Override

@@ -23,8 +23,12 @@ public interface NodeInter {
      *
      * @param config 节点配置
      */
-
     <T extends BaseNodeConfig> void setConfig(T config);
+
+    /**
+     * 初始化配置
+     */
+    void initConfig();
 
     // ===== SubCommand =====
 

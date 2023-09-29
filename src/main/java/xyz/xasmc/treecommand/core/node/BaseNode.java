@@ -25,6 +25,14 @@ public abstract class BaseNode implements NodeInter {
     @Override
     public <T extends BaseNodeConfig> void setConfig(T config) {
         this.config = config;
+        this.initConfig();
+    }
+
+    /**
+     * 初始化配置
+     */
+    @Override
+    public void initConfig() {
     }
 
     // ===== addSubCommand =====

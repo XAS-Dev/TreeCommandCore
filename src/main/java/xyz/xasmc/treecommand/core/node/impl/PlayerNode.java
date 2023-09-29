@@ -15,6 +15,11 @@ import java.util.List;
 public class PlayerNode extends BaseNode implements Parseable {
     protected PlayerNodeConfig config;
 
+    @Override
+    public void initConfig() {
+        this.config = (PlayerNodeConfig) super.config;
+    }
+
     // ===== Parseable =====
     @Override
     @Nullable
