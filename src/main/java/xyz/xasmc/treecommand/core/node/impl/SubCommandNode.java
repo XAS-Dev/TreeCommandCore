@@ -1,6 +1,5 @@
 package xyz.xasmc.treecommand.core.node.impl;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.config.SubCommandNodeConfig;
@@ -14,7 +13,6 @@ public class SubCommandNode extends BaseNode implements Parseable, Executable {
 
     @Override
     public void initConfig() {
-        Bukkit.getLogger().info("init cfg");
         this.config = (SubCommandNodeConfig) super.config;
     }
 

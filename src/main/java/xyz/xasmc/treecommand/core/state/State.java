@@ -1,6 +1,5 @@
 package xyz.xasmc.treecommand.core.state;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
@@ -176,11 +175,9 @@ public class State {
                         // 继续遍历下面的节点,如果后面的节点匹配成功会覆盖错误信息
                         this.setError(node, child, StateException.NOT_COMPLETE, processedArgc);
                         // 下一个节点
-                        Bukkit.getLogger().info(child.getNodeName() + " 不完整");
                         continue;// 不完整,换下一个子节点
                     }
                 } else {
-                    Bukkit.getLogger().info(child.getNodeName() + " 不匹配");
                     continue; // 不匹配,换下一个子节点
                 }
             }
