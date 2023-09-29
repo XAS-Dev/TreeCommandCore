@@ -6,19 +6,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.xasmc.treecommand.core.function.Executor;
-import xyz.xasmc.treecommand.core.function.Next;
-import xyz.xasmc.treecommand.core.function.NextImpl;
+import xyz.xasmc.treecommand.core.middleware.MiddlewareService;
+import xyz.xasmc.treecommand.core.middleware.functional.Middleware;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
-import xyz.xasmc.treecommand.core.node.marker.Executable;
 import xyz.xasmc.treecommand.core.node.marker.Parseable;
 import xyz.xasmc.treecommand.core.state.State;
 import xyz.xasmc.treecommand.core.state.StateException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TreeCommand extends RootNode implements TabExecutor {
@@ -28,51 +25,16 @@ public class TreeCommand extends RootNode implements TabExecutor {
     public TreeCommand() {
     }
 
-    public TreeCommand(Executor executor) {
-        this.setExecutor(executor);
+    public TreeCommand(Middleware middleware) {
+        this.setMiddleware(middleware);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         this.state.load(args, sender, label);
-
-        // StringBuffer result = new StringBuffer();
-        // result.append("可执行节点: ");
-        // this.state.getExecutableNodes().forEach((item) -> {
-        //     result.append(item.getNodeName());
-        //     result.append(" ");
-        // });
-        // Bukkit.getLogger().info(result.toString());
-
-        if (this.state.isSuccess()) {
-            this.getNextFunction().apply();
-        } else {
-            this.onError();
-        }
+        MiddlewareService.loadState(this.state).next();
         return true;
     }
-
-    /**
-     * 获取next函数链表
-     *
-     * @return Next链表
-     */
-    public Next getNextFunction() {
-        NextImpl result = null;
-        List<Executable> executableNodes = new ArrayList<>(this.state.getExecutableNodes());
-        Collections.reverse(executableNodes);
-        for (Executable node : executableNodes) {
-            if (result == null) {
-                result = new NextImpl(node.getExecutor(), this.state);
-            } else {
-                NextImpl next = new NextImpl(node.getExecutor(), this.state);
-                result.setNext(next);
-                result = next;
-            }
-        }
-        return result;
-    }
-
 
     /**
      * 处理错误

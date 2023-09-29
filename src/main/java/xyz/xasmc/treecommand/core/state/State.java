@@ -91,7 +91,7 @@ public class State {
      * @param name 键
      * @return 值
      */
-    public Object getState(String name) {
+    public Object getValue(String name) {
         return this.state.get(name);
     }
 
@@ -101,7 +101,7 @@ public class State {
      * @param name 键
      * @return 值
      */
-    public <T> T getState(String name, Class<T> type) {
+    public <T> T getValue(String name, Class<T> type) {
         return type.cast(this.state.get(name));
     }
 
@@ -203,11 +203,11 @@ public class State {
                     }
                     // 节点不可结束
                     // 参数过少
-                    this.setError(node, StateException.TOO_FEW_ARGS, processedArgc);
+                    this.setError(node, StateException.TOO_FEW_ARGS, this.processedArgc);
                 } else {
                     // 还有未处理的参数
                     // 错误的参数
-                    this.setError(node, StateException.WRONG_ARGS, processedArgc);
+                    this.setError(node, StateException.WRONG_ARGS, this.processedArgc);
                 }
                 return false;
             }

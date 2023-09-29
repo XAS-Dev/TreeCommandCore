@@ -1,6 +1,6 @@
 package xyz.xasmc.treecommand.core.node;
 
-import xyz.xasmc.treecommand.core.function.Executor;
+import xyz.xasmc.treecommand.core.middleware.functional.Middleware;
 import xyz.xasmc.treecommand.core.node.impl.ExecuteNode;
 import xyz.xasmc.treecommand.core.node.impl.SubCommandNode;
 import xyz.xasmc.treecommand.core.node.impl.TerminalNode;
@@ -43,10 +43,10 @@ public interface NodeInter {
      * 为该节点添加一个SubCommandNode子节点,返回新建的SubCommandNode.
      *
      * @param label    子指令名
-     * @param executor 执行器
+     * @param middleware 执行器
      * @return 新建的SubCommandNode子节点
      */
-    SubCommandNode addSubCommand(String label, Executor executor);
+    SubCommandNode addSubCommand(String label, Middleware middleware);
 
     /**
      * 添加子指令,返回此节点.
@@ -54,10 +54,10 @@ public interface NodeInter {
      * 为该节点添加一个SubCommandNode子节点,返回此节点.
      *
      * @param label    子指令名
-     * @param executor 执行器
+     * @param middleware 执行器
      * @return this
      */
-    BaseNode addSubCommandAndEnd(String label, Executor executor);
+    BaseNode addSubCommandAndEnd(String label, Middleware middleware);
 
     // ===== Argument =====
 
@@ -125,10 +125,10 @@ public interface NodeInter {
     /**
      * 添加可执行节点
      *
-     * @param executor 执行器
+     * @param middleware 执行器
      * @return 可执行节点
      */
-    ExecuteNode addExecuteNode(Executor executor);
+    ExecuteNode addExecuteNode(Middleware middleware);
 
     // ===== CommandTree =====
 

@@ -1,6 +1,6 @@
 package xyz.xasmc.treecommand.core.node;
 
-import xyz.xasmc.treecommand.core.function.Executor;
+import xyz.xasmc.treecommand.core.middleware.functional.Middleware;
 import xyz.xasmc.treecommand.core.node.impl.*;
 import xyz.xasmc.treecommand.core.node.marker.Executable;
 
@@ -45,15 +45,15 @@ public abstract class BaseNode implements NodeInter {
     }
 
     @Override
-    public SubCommandNode addSubCommand(String label, Executor executor) {
+    public SubCommandNode addSubCommand(String label, Middleware middleware) {
         SubCommandNode child = this.addSubCommand(label);
-        child.setExecutor(executor);
+        child.setMiddleware(middleware);
         return child;
     }
 
     @Override
-    public BaseNode addSubCommandAndEnd(String label, Executor executor) {
-        this.addSubCommand(label, executor);
+    public BaseNode addSubCommandAndEnd(String label, Middleware middleware) {
+        this.addSubCommand(label, middleware);
         return this;
     }
 
@@ -100,9 +100,9 @@ public abstract class BaseNode implements NodeInter {
         return template;
     }
 
-    public ExecuteNode addExecuteNode(Executor executor) {
+    public ExecuteNode addExecuteNode(Middleware middleware) {
         ExecuteNode child = new ExecuteNode();
-        child.setExecutor(executor);
+        child.setMiddleware(middleware);
         return this.addExecuteNode(child);
     }
 
@@ -203,16 +203,17 @@ public abstract class BaseNode implements NodeInter {
 
     // ===== Executable =====
 
-    protected Executor executor = (state, next) -> next.apply();
+    protected Middleware middleware = (ctx, next) -> next.next();
 
-    public Executor getExecutor() {
+
+    public Middleware getMiddleware() {
         if (!(this instanceof Executable)) return null;
-        return this.executor;
+        return this.middleware;
     }
 
-    public void setExecutor(Executor executor) {
+    public void setMiddleware(Middleware middleware) {
         if (!(this instanceof Executable)) return;
-        this.executor = executor;
+        this.middleware = middleware;
     }
 
     // ===== custom =====

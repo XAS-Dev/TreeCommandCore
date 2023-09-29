@@ -5,5 +5,5 @@ import xyz.xasmc.treecommand.core.middleware.NextMiddleware;
 
 @FunctionalInterface
 public interface Middleware {
-    void handle(Context context, NextMiddleware next);
+    void handle(Context ctx, NextMiddleware next);
 }

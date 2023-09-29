@@ -39,7 +39,7 @@ import type.node.xyz.xasmc.treecommand.core.NodeType;
 public class ExampleCommand extends JavaPlugin {
     @Override
     public void onEnable() {
-        getLogger().info("TestTreeCommand 已加载");
+        this.getLogger().info("TestTreeCommand 已加载");
 
         TreeCommand testTreeCommand = new TreeCommand((state, next) -> {
             state.getSender().sendMessage("success");
@@ -67,7 +67,7 @@ public class ExampleCommand extends JavaPlugin {
                 .addSubCommand("player",(state,next)->{
                     boolean applied = next.apply();
                     state.getSender().sendMessage("player");
-                    Player player = state.getState("player", Player.class);
+                    Player player = state.getValue("player", Player.class);
                     player.chat("qwq");
                     return applied;
                 })
@@ -76,14 +76,14 @@ public class ExampleCommand extends JavaPlugin {
                 .addSubCommand("pos",((state, next) -> {
                     boolean applied = next.apply();
                     state.getSender().sendMessage("pos");
-                    state.getSender().sendMessage(state.getState("position", Location.class).toString());
+                    state.getSender().sendMessage(state.getValue("position", Location.class).toString());
                     return applied;
                 }))
                         .addArgumentAndEnd(NodeType.POSITION,"position") // 简化写法,添加参数,返回源节点
                 .end()
                 .addSubCommand("block",((state, next) -> {
                     boolean applied = next.apply();
-                    Block block = state.getState("block", Block.class);
+                    Block block = state.getValue("block", Block.class);
                     state.getSender().sendMessage("block");
                     state.getSender().sendMessage(String.format("(%d, %d, %d) %s", block.getX(), block.getY(), block.getZ(), block.getType()));
                     return applied;
