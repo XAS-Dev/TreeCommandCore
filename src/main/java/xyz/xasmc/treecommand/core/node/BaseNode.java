@@ -1,6 +1,8 @@
 package xyz.xasmc.treecommand.core.node;
 
 import xyz.xasmc.treecommand.core.middleware.functional.Middleware;
+import xyz.xasmc.treecommand.core.node.config.BaseNodeConfig;
+import xyz.xasmc.treecommand.core.node.config.SubCommandNodeConfig;
 import xyz.xasmc.treecommand.core.node.impl.*;
 import xyz.xasmc.treecommand.core.node.marker.Executable;
 
@@ -11,16 +13,7 @@ public abstract class BaseNode implements NodeInter {
     protected String nodeName = null;
     protected BaseNode parent = null;
     protected List<BaseNode> children = new ArrayList<>();
-
-
-    public BaseNode() {
-
-    }
-
-    public BaseNode(String nodeName, BaseNode parent) {
-        this.setNodeName(nodeName);
-        this.setParent(parent);
-    }
+    protected BaseNodeConfig config = null;
 
     // ===== setup =====
     @Override
@@ -29,10 +22,19 @@ public abstract class BaseNode implements NodeInter {
         this.children.add(child);
     }
 
+    @Override
+    public <T extends BaseNodeConfig> void setConfig(T config) {
+        this.config = config;
+    }
+
     // ===== addSubCommand =====
     @Override
     public SubCommandNode addSubCommand(String label) {
-        SubCommandNode child = new SubCommandNode(label);
+        SubCommandNodeConfig config = new SubCommandNodeConfig();
+        config.label = label;
+        // setup child
+        SubCommandNode child = new SubCommandNode();
+        child.setConfig(config);
         child.setNodeName("SUB_COMMAND:" + label);
         this.addChild(child);
         return child;
@@ -82,6 +84,32 @@ public abstract class BaseNode implements NodeInter {
         this.addArgument(nodeType, name);
         return this;
     }
+
+    @Override
+    public BaseNode addArgument(BaseNode template, String name, BaseNodeConfig config) {
+        template.setNodeName(name);
+        template.setConfig(config);
+        this.addChild(template);
+        return template;
+    }
+
+    @Override
+    public BaseNode addArgumentAndEnd(BaseNode template, String name, BaseNodeConfig config) {
+        this.addArgument(template, name, config);
+        return this;
+    }
+
+    @Override
+    public BaseNode addArgument(NodeType nodeType, String name, BaseNodeConfig config) {
+        return this.addArgument(this.getArgumentByType(nodeType), name, config);
+    }
+
+    @Override
+    public BaseNode addArgumentAndEnd(NodeType nodeType, String name, BaseNodeConfig config) {
+        this.addArgument(nodeType, name, config);
+        return this;
+    }
+
 
     // ===== addTerminalNode =====
 
@@ -192,14 +220,13 @@ public abstract class BaseNode implements NodeInter {
         return this.nodeName;
     }
 
-    // @Override
-    protected BaseNode setNodeName(String name) {
+    public BaseNode setNodeName(String name) {
         this.nodeName = name;
         return this;
     }
 
-    // @Override
-    protected BaseNode setParent(BaseNode parent) {
+    @Override
+    public BaseNode setParent(BaseNode parent) {
         this.parent = parent;
         return this;
     }

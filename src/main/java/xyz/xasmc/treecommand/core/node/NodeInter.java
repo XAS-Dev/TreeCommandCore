@@ -1,6 +1,7 @@
 package xyz.xasmc.treecommand.core.node;
 
 import xyz.xasmc.treecommand.core.middleware.functional.Middleware;
+import xyz.xasmc.treecommand.core.node.config.BaseNodeConfig;
 import xyz.xasmc.treecommand.core.node.impl.ExecuteNode;
 import xyz.xasmc.treecommand.core.node.impl.SubCommandNode;
 import xyz.xasmc.treecommand.core.node.impl.TerminalNode;
@@ -16,6 +17,14 @@ public interface NodeInter {
      * @param child 子节点
      */
     void addChild(BaseNode child);
+
+    /**
+     * 设置节点配置
+     *
+     * @param config 节点配置
+     */
+
+    <T extends BaseNodeConfig> void setConfig(T config);
 
     // ===== SubCommand =====
 
@@ -63,6 +72,7 @@ public interface NodeInter {
 
     /**
      * 添加参数.
+     * <p>
      * 为该节点添加一个子节点,返回新建的节点.
      *
      * @param template 子节点模版
@@ -73,6 +83,7 @@ public interface NodeInter {
 
     /**
      * 添加参数,返回此节点.
+     * <p>
      * this.impl(xxx).end()的简写.
      * 添加一个参数子节点,返回此节点.
      *
@@ -84,6 +95,7 @@ public interface NodeInter {
 
     /**
      * 添加参数.
+     * <p>
      * 为该节点添加一个子节点,返回新建的节点.
      *
      * @param nodeType 子节点类型
@@ -94,6 +106,7 @@ public interface NodeInter {
 
     /**
      * 添加参数,返回此节点.
+     * <p>
      * this.impl(xxx).end()的简写.
      * 添加一个参数子节点,返回此节点.
      *
@@ -102,6 +115,56 @@ public interface NodeInter {
      * @return this
      */
     BaseNode addArgumentAndEnd(NodeType nodeType, String name);
+
+    /**
+     * 添加参数.
+     * <p>
+     * 为该节点添加一个子节点,返回新建的节点.
+     *
+     * @param template 子节点模版
+     * @param name     子节点名
+     * @param config   节点配置
+     * @return 新建的参数子节点
+     */
+    BaseNode addArgument(BaseNode template, String name, BaseNodeConfig config);
+
+    /**
+     * 添加参数,返回此节点.
+     * <p>
+     * this.impl(xxx).end()的简写.
+     * 添加一个参数子节点,返回此节点.
+     *
+     * @param template 子节点模版
+     * @param name     子节点名
+     * @param config   节点配置
+     * @return this
+     */
+    BaseNode addArgumentAndEnd(BaseNode template, String name, BaseNodeConfig config);
+
+    /**
+     * 添加参数.
+     * <p>
+     * 为该节点添加一个子节点,返回新建的节点.
+     *
+     * @param nodeType 子节点类型
+     * @param name     子节点名
+     * @param config   节点配置
+     * @return 新建的参数子节点
+     */
+    BaseNode addArgument(NodeType nodeType, String name, BaseNodeConfig config);
+
+    /**
+     * 添加参数,返回此节点.
+     * <p>
+     * this.impl(xxx).end()的简写.
+     * 添加一个参数子节点,返回此节点.
+     *
+     * @param nodeType 子节点类型
+     * @param name     子节点名
+     * @param config   节点配置
+     * @return this
+     */
+    BaseNode addArgumentAndEnd(NodeType nodeType, String name, BaseNodeConfig config);
 
     // ===== EndNode =====
 
@@ -210,7 +273,7 @@ public interface NodeInter {
 
     String getNodeName();
 
-    // BaseNode setNodeName(String name);
-    //
-    // BaseNode setParent(BaseNode parent);
+    BaseNode setNodeName(String name);
+
+    BaseNode setParent(BaseNode parent);
 }

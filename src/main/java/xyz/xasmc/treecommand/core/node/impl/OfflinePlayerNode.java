@@ -4,27 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
+import xyz.xasmc.treecommand.core.node.config.OfflinePlayerNodeConfig;
 import xyz.xasmc.treecommand.core.node.marker.Parseable;
 
 import javax.annotation.Nullable;
 
 public class OfflinePlayerNode extends BaseNode implements Parseable {
-    protected boolean isCheckPlayerName = false;
-
-    // ===== init =====
-
-    public OfflinePlayerNode() {
-    }
-
-    public OfflinePlayerNode(boolean isCheckPlayerName) {
-        this.isCheckPlayerName = isCheckPlayerName;
-    }
-
-    public OfflinePlayerNode(String nodeName, BaseNode parent, boolean isCheckPlayerName) {
-        super(nodeName, parent);
-        this.isCheckPlayerName = isCheckPlayerName;
-    }
-
+    protected OfflinePlayerNodeConfig config;
 
     // ===== Parseable =====
 
@@ -41,7 +27,7 @@ public class OfflinePlayerNode extends BaseNode implements Parseable {
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
         if (unprocessedArgs.length == 0) return -1;
-        if (!this.isCheckPlayerName) return 1;
+        if (!this.config.isCheckPlayerName) return 1;
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
             String name = offlinePlayer.getName();
             if (name != null && name.equalsIgnoreCase(unprocessedArgs[0])) return 1;
@@ -58,6 +44,6 @@ public class OfflinePlayerNode extends BaseNode implements Parseable {
     // ===== custom =====
 
     public void setCheckPlayerName(boolean checkPlayerName) {
-        this.isCheckPlayerName = checkPlayerName;
+        this.config.isCheckPlayerName = checkPlayerName;
     }
 }
