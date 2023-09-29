@@ -259,8 +259,8 @@ public abstract class BaseNode implements NodeInter {
         switch (type) {
             case BLOCK:
                 return new BlockNode();
-            // case Enum:
-            //     return new EnumNode();
+            case ENUM:
+                return new EnumNode();
             case OFFLINE_PLAYER:
                 return new OfflinePlayerNode();
             case PLAYER:

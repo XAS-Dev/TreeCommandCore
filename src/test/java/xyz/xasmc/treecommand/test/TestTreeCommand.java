@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xasmc.treecommand.core.TreeCommand;
 import xyz.xasmc.treecommand.core.node.NodeType;
+import xyz.xasmc.treecommand.core.node.config.EnumNodeConfig;
 
 public class TestTreeCommand extends JavaPlugin {
     @Override
@@ -62,6 +63,11 @@ public class TestTreeCommand extends JavaPlugin {
                 })
                         .addArgumentAndEnd(NodeType.BLOCK, "block")
                 .end()
+                .addSubCommand("enum", (ctx, next) -> {
+                    ctx.getSender().sendMessage("you chose: "+ ctx.getValue("enum", String.class));
+                    next.next();
+                })
+                .addArgument(NodeType.ENUM,"enum",new EnumNodeConfig(new String[]{"a", "b", "c"}))
         ;
         // @formatter:on
 
