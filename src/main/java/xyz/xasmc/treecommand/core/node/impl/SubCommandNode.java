@@ -1,4 +1,4 @@
-package xyz.xasmc.treecommand.core.node.type;
+package xyz.xasmc.treecommand.core.node.impl;
 
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
@@ -43,7 +43,6 @@ public class SubCommandNode extends BaseNode implements Parseable, Executable {
         if (this.caseSensitive) return unprocessedArgs[0].equals(this.label) ? 1 : -1;
         else return unprocessedArgs[0].equalsIgnoreCase(this.label) ? 1 : -1;
     }
-
 
     // ===== custom =====
 

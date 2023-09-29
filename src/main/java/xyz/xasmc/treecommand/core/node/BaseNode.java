@@ -1,18 +1,26 @@
 package xyz.xasmc.treecommand.core.node;
 
 import xyz.xasmc.treecommand.core.function.Executor;
-import xyz.xasmc.treecommand.core.node.marker.BaseExecutableImpl;
+import xyz.xasmc.treecommand.core.node.impl.*;
 import xyz.xasmc.treecommand.core.node.marker.Executable;
-import xyz.xasmc.treecommand.core.node.marker.Terminable;
-import xyz.xasmc.treecommand.core.node.type.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
+public abstract class BaseNode implements NodeInter {
     protected String nodeName = null;
     protected BaseNode parent = null;
     protected List<BaseNode> children = new ArrayList<>();
+
+
+    public BaseNode() {
+
+    }
+
+    public BaseNode(String nodeName, BaseNode parent) {
+        this.setNodeName(nodeName);
+        this.setParent(parent);
+    }
 
     // ===== setup =====
     @Override
@@ -21,7 +29,7 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
         this.children.add(child);
     }
 
-    // ===== SubCommand =====
+    // ===== addSubCommand =====
     @Override
     public SubCommandNode addSubCommand(String label) {
         SubCommandNode child = new SubCommandNode(label);
@@ -49,7 +57,7 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
         return this;
     }
 
-    // ===== Argument =====
+    // ===== addArgument =====
 
     @Override
     public <T extends BaseNode> T addArgument(T template, String name) {
@@ -66,30 +74,7 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
 
     @Override
     public BaseNode addArgument(NodeType nodeType, String name) {
-        BaseNode child;
-        switch (nodeType) {
-            case ALL_PLAYER:
-                child = new AllPlayerNode();
-                break;
-            case BLOCK:
-                child = new BlockNode();
-                break;
-            // case Enum:
-            //     child = new EnumNode();
-            //     break;
-            case PLAYER:
-                child = new PlayerNode();
-                break;
-            case POSITION:
-                child = new PositionNode();
-                break;
-            // case Selector:
-            //     child = new SelectorNode();
-            //     break;
-            default:
-                return null;
-        }
-        return this.addArgument(child, name);
+        return this.addArgument(this.getArgumentByType(nodeType), name);
     }
 
     @Override
@@ -98,24 +83,24 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
         return this;
     }
 
-    // ===== EndNode =====
+    // ===== addTerminalNode =====
 
     public TerminalNode addTerminalNode() {
         TerminalNode child = new TerminalNode();
-        child.setNodeName("TERMINAL_NODE:" + child.hashCode());
+        child.setNodeName("TERMINAL_NODE:@" + child.hashCode());
         this.addChild(child);
         return child;
     }
 
-    // ===== ExecutableNode =====
+    // ===== addExecutableNode =====
 
-    public Executable addExecuteNode(Executable template) {
-        template.setNodeName("EXECUTE_NODE:" + template.hashCode());
-        this.addChild((BaseNode) template);
+    public ExecuteNode addExecuteNode(ExecuteNode template) {
+        template.setNodeName("EXECUTE_NODE:@" + template.hashCode());
+        this.addChild(template);
         return template;
     }
 
-    public Executable addExecuteNode(Executor executor) {
+    public ExecuteNode addExecuteNode(Executor executor) {
         ExecuteNode child = new ExecuteNode();
         child.setExecutor(executor);
         return this.addExecuteNode(child);
@@ -130,7 +115,7 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
 
     @Override
     public boolean isTerminable() {
-        return this.isLeafNode() || this instanceof Terminable;
+        return this.isLeafNode();
     }
 
     // ===== Tree =====
@@ -147,13 +132,10 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
 
     public RootNode getRoot() {
         BaseNode node = this;
-        while (true) {
-            if (node instanceof RootNode) {
-                return (RootNode) node;
-            } else {
-                node = node.getParent();
-            }
+        while (!(node instanceof RootNode)) {
+            node = node.getParent();
         }
+        return (RootNode) node;
     }
 
     @Override
@@ -207,15 +189,50 @@ public abstract class BaseNode extends BaseExecutableImpl implements NodeInter {
         return this.nodeName;
     }
 
-    @Override
-    public BaseNode setNodeName(String name) {
+    // @Override
+    protected BaseNode setNodeName(String name) {
         this.nodeName = name;
         return this;
     }
 
-    @Override
-    public BaseNode setParent(BaseNode parent) {
+    // @Override
+    protected BaseNode setParent(BaseNode parent) {
         this.parent = parent;
         return this;
+    }
+
+    // ===== Executable =====
+
+    protected Executor executor = (state, next) -> next.apply();
+
+    public Executor getExecutor() {
+        if (!(this instanceof Executable)) return null;
+        return this.executor;
+    }
+
+    public void setExecutor(Executor executor) {
+        if (!(this instanceof Executable)) return;
+        this.executor = executor;
+    }
+
+    // ===== custom =====
+
+    private BaseNode getArgumentByType(NodeType type) {
+        switch (type) {
+            case ALL_PLAYER:
+                return new AllPlayerNode();
+            case BLOCK:
+                return new BlockNode();
+            // case Enum:
+            //     return new EnumNode();
+            case PLAYER:
+                return new PlayerNode();
+            case POSITION:
+                return new PositionNode();
+            // case Selector:
+            //     child = new SelectorNode();
+            default:
+                return null;
+        }
     }
 }

@@ -1,4 +1,4 @@
-package xyz.xasmc.treecommand.core.node.type;
+package xyz.xasmc.treecommand.core.node.impl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

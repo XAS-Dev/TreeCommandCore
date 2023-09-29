@@ -1,4 +1,4 @@
-package xyz.xasmc.treecommand.core.node.type;
+package xyz.xasmc.treecommand.core.node;
 
 public enum NodeType {
     ALL_PLAYER,
@@ -7,5 +7,4 @@ public enum NodeType {
     PLAYER,
     POSITION,
     SELECTOR,
-    SUB_COMMAND,
 }

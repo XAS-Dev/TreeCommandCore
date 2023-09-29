@@ -5,12 +5,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xasmc.treecommand.core.TreeCommand;
-import xyz.xasmc.treecommand.core.node.type.NodeType;
+import xyz.xasmc.treecommand.core.node.NodeType;
 
 public class TestTreeCommand extends JavaPlugin {
     @Override
     public void onEnable() {
-        getLogger().info("TestTreeCommand 已加载");
+        this.getLogger().info("TestTreeCommand 已加载");
 
         TreeCommand testTreeCommand = new TreeCommand(((state, next) -> {
             state.getSender().sendMessage("success");
