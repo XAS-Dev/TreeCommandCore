@@ -26,7 +26,7 @@ public class PositionNode extends BaseNode implements Parseable {
         String[] resultArray = {"~", "~", "~"};
         if (sender instanceof Player) { // 发送者是玩家
             Player player = (Player) sender;
-            Vector position = Intersection.getIntersection(player);
+            Vector position = Intersection.getIntersectionWithBlock(player);
             if (position != null) { // 玩家指针与方块有交点
                 resultArray[0] = String.format("%.2f", position.getX());
                 resultArray[1] = String.format("%.2f", position.getY());

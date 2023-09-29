@@ -267,8 +267,8 @@ public abstract class BaseNode implements NodeInter {
                 return new PlayerNode();
             case POSITION:
                 return new PositionNode();
-            // case Selector:
-            //     child = new SelectorNode();
+            case SELECTOR:
+                return new SelectorNode();
             default:
                 return null;
         }

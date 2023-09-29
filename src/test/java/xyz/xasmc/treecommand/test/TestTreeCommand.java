@@ -3,11 +3,15 @@ package xyz.xasmc.treecommand.test;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xasmc.treecommand.core.TreeCommand;
 import xyz.xasmc.treecommand.core.node.NodeType;
 import xyz.xasmc.treecommand.core.node.config.EnumNodeConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestTreeCommand extends JavaPlugin {
     @Override
@@ -67,7 +71,19 @@ public class TestTreeCommand extends JavaPlugin {
                     ctx.getSender().sendMessage("you chose: "+ ctx.getValue("enum", String.class));
                     next.next();
                 })
-                .addArgument(NodeType.ENUM,"enum",new EnumNodeConfig(new String[]{"a", "b", "c"}))
+                    .addArgumentAndEnd(NodeType.ENUM,"enum",new EnumNodeConfig(new String[]{"a", "b", "c"}))
+                .end()
+                .addSubCommand("selector", (ctx, next) -> {
+                    ctx.getSender().sendMessage("you selected some entities:");
+                    List<Entity> entitys = ctx.getValue("selector", List.class);
+                    List<String> entityTypeList = new ArrayList<>(entitys.size());
+                    for (Entity entity:entitys){
+                        entityTypeList.add(entity.getType().name());
+                    }
+                    ctx.getSender().sendMessage(String.join("; ", entityTypeList));
+                    next.next();
+                })
+                .addArgumentAndEnd(NodeType.SELECTOR, "selector")
         ;
         // @formatter:on
 
