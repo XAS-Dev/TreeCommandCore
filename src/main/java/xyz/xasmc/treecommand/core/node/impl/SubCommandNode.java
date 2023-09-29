@@ -10,7 +10,7 @@ import xyz.xasmc.treecommand.core.node.marker.Parseable;
 import javax.annotation.Nullable;
 
 public class SubCommandNode extends BaseNode implements Parseable, Executable {
-    protected SubCommandNodeConfig config;
+    protected SubCommandNodeConfig config = new SubCommandNodeConfig();
 
     @Override
     public void initConfig() {

@@ -106,8 +106,6 @@ public class TreeCommand extends RootNode implements TabExecutor {
         this.state.load(Arrays.copyOfRange(args, 0, args.length - 1), sender, label);
         String lastArg = args[args.length - 1];
         StateException errorReason = this.state.getException();
-        // Bukkit.getLogger().info(String.valueOf(this.state.getErrorReason() == StateError.TOO_FEW_ARGS || this.state.getErrorReason() == StateError.NOT_COMPLETE || this.state.isSuccess()) + " " + (errorReason == null ? "null" : errorReason.name()));
-        // if (this.state.getErrorReason() == StateError.TOO_FEW_ARGS || this.state.getErrorReason() == StateError.NOT_COMPLETE || this.state.isSuccess()) { // 参数不够或成功时触发补全
         if (errorReason == StateException.WRONG_ARGS) return new ArrayList<>();// 错误的参数 返回空数组
         List<String> completeList = new ArrayList<>();
         for (BaseNode child : this.state.getLastNode().getChildren()) {
@@ -128,8 +126,5 @@ public class TreeCommand extends RootNode implements TabExecutor {
             }
         }
         return result;
-        // } else {
-        //     return new ArrayList<>();// 错误 返回空列表
-        // }
     }
 }

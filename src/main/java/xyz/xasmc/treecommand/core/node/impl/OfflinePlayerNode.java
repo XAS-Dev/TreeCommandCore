@@ -10,7 +10,7 @@ import xyz.xasmc.treecommand.core.node.marker.Parseable;
 import javax.annotation.Nullable;
 
 public class OfflinePlayerNode extends BaseNode implements Parseable {
-    protected OfflinePlayerNodeConfig config;
+    protected OfflinePlayerNodeConfig config = new OfflinePlayerNodeConfig();
 
     @Override
     public void initConfig() {

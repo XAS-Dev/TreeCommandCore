@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class PlayerNode extends BaseNode implements Parseable {
-    protected PlayerNodeConfig config;
+    protected PlayerNodeConfig config = new PlayerNodeConfig();
 
     @Override
     public void initConfig() {
