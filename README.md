@@ -33,6 +33,7 @@ Here's an example of how to use TreeCommandCore in your Java plugin:
 ```java
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -77,7 +78,7 @@ public class ExampleCommand extends JavaPlugin {
                 .end() // 使用end()结束对子节点的设置
                 .addSubCommand("offline_player", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected an offline player");
-                    Player player = ctx.getValue("offline_player", Player.class);
+                    OfflinePlayer player = ctx.getValue("offline_player", OfflinePlayer.class);
                     ctx.getSender().sendMessage("his or her name is " + player.getName() + " and UUID is " + player.getUniqueId());
                     next.next();
                 })
