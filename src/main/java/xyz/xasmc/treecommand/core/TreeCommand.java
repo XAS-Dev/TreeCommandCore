@@ -32,7 +32,12 @@ public class TreeCommand extends RootNode implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         this.state.load(args, sender, label);
-        MiddlewareService.loadState(this.state).next();
+
+        if (this.state.isSuccess()) {
+            MiddlewareService.loadState(this.state).next();
+        } else {
+            this.onError();
+        }
         return true;
     }
 
