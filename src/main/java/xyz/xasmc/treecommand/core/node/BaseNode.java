@@ -219,12 +219,12 @@ public abstract class BaseNode implements NodeInter {
 
     private BaseNode getArgumentByType(NodeType type) {
         switch (type) {
-            case ALL_PLAYER:
-                return new AllPlayerNode();
             case BLOCK:
                 return new BlockNode();
             // case Enum:
             //     return new EnumNode();
+            case OFFLINE_PLAYER:
+                return new OfflinePlayerNode();
             case PLAYER:
                 return new PlayerNode();
             case POSITION:

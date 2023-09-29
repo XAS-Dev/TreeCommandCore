@@ -44,6 +44,15 @@ public class TestTreeCommand extends JavaPlugin {
                 })
                         .addArgument(NodeType.PLAYER,"player").end() // 为子指令添加参数;使用end()返回父节点
                 .end() // 使用end()返回父节点
+                .addSubCommand("offline_player",(state, next) -> {
+                    boolean applied = next.apply();
+                    state.getSender().sendMessage("offline_player");
+                    Player player = state.getState("offline_player", Player.class);
+                    state.getSender().sendMessage(player.getName() + " " + player.getUniqueId());
+                    return applied;
+                })
+                        .addArgument(NodeType.OFFLINE_PLAYER,"offline_player").end()
+                .end()
                 .addSubCommand("pos",((state, next) -> {
                     boolean applied = next.apply();
                     state.getSender().sendMessage("pos");
