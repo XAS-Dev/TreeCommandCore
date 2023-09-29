@@ -42,7 +42,7 @@ public interface NodeInter {
      * 添加子指令.
      * 为该节点添加一个SubCommandNode子节点,返回新建的SubCommandNode.
      *
-     * @param label    子指令名
+     * @param label      子指令名
      * @param middleware 执行器
      * @return 新建的SubCommandNode子节点
      */
@@ -53,7 +53,7 @@ public interface NodeInter {
      * this.subCommand(...).end()的简写.
      * 为该节点添加一个SubCommandNode子节点,返回此节点.
      *
-     * @param label    子指令名
+     * @param label      子指令名
      * @param middleware 执行器
      * @return this
      */
@@ -69,7 +69,7 @@ public interface NodeInter {
      * @param name     子节点名
      * @return 新建的参数子节点
      */
-    <T extends BaseNode> T addArgument(T template, String name);
+    BaseNode addArgument(BaseNode template, String name);
 
     /**
      * 添加参数,返回此节点.
@@ -80,7 +80,7 @@ public interface NodeInter {
      * @param name     子节点名
      * @return this
      */
-    <T extends BaseNode> BaseNode addArgumentAndEnd(T template, String name);
+    BaseNode addArgumentAndEnd(BaseNode template, String name);
 
     /**
      * 添加参数.

@@ -60,14 +60,14 @@ public abstract class BaseNode implements NodeInter {
     // ===== addArgument =====
 
     @Override
-    public <T extends BaseNode> T addArgument(T template, String name) {
+    public BaseNode addArgument(BaseNode template, String name) {
         template.setNodeName(name);
         this.addChild(template);
         return template;
     }
 
     @Override
-    public <T extends BaseNode> BaseNode addArgumentAndEnd(T template, String name) {
+    public BaseNode addArgumentAndEnd(BaseNode template, String name) {
         this.addArgument(template, name);
         return this;
     }
@@ -85,6 +85,7 @@ public abstract class BaseNode implements NodeInter {
 
     // ===== addTerminalNode =====
 
+    @Override
     public TerminalNode addTerminalNode() {
         TerminalNode child = new TerminalNode();
         child.setNodeName("TERMINAL_NODE:@" + child.hashCode());
@@ -94,12 +95,14 @@ public abstract class BaseNode implements NodeInter {
 
     // ===== addExecutableNode =====
 
+    @Override
     public ExecuteNode addExecuteNode(ExecuteNode template) {
         template.setNodeName("EXECUTE_NODE:@" + template.hashCode());
         this.addChild(template);
         return template;
     }
 
+    @Override
     public ExecuteNode addExecuteNode(Middleware middleware) {
         ExecuteNode child = new ExecuteNode();
         child.setMiddleware(middleware);
@@ -204,7 +207,6 @@ public abstract class BaseNode implements NodeInter {
     // ===== Executable =====
 
     protected Middleware middleware = (ctx, next) -> next.next();
-
 
     public Middleware getMiddleware() {
         if (!(this instanceof Executable)) return null;
