@@ -1,6 +1,9 @@
 package xyz.xasmc.treecommand.core.middleware;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
 
@@ -28,5 +31,19 @@ public class MiddlewareService {
 
     protected static void BaseMiddleware(Context ctx, NextMiddleware next) {
         next.next();
+        // 发送 MessageToSender
+        CommandSender sender = ctx.getSender();
+        if (sender instanceof Player) {
+            ((Player) sender).spigot().sendMessage(ctx.getMessageToSender().toArray(new BaseComponent[0]));
+        } else {
+            StringBuilder result = new StringBuilder();
+            for (BaseComponent component : ctx.getMessageToSender()) {
+                result.append(component.toLegacyText());
+            }
+            sender.sendMessage(result.toString());
+        }
+        // 发送 MessageToBroadCast
+        Bukkit.spigot().broadcast(ctx.getMessageToBroadcast().toArray(new BaseComponent[0]));
+
     }
 }
