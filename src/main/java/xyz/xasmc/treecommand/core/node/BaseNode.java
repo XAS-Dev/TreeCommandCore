@@ -115,14 +115,14 @@ public abstract class BaseNode {
      * <p>
      * 为该节点添加一个子节点,返回新建的节点.
      *
-     * @param template 子节点模版
-     * @param name     子节点名
+     * @param object 子节点模版
+     * @param name   子节点名
      * @return 新建的参数子节点
      */
-    public BaseNode addArgument(BaseNode template, String name) {
-        template.setNodeName(name);
-        this.addChild(template);
-        return template;
+    public BaseNode addArgument(BaseNode object, String name) {
+        object.setNodeName(name);
+        this.addChild(object);
+        return object;
     }
 
     /**
@@ -131,12 +131,12 @@ public abstract class BaseNode {
      * this.impl(xxx).end()的简写.
      * 添加一个参数子节点,返回此节点.
      *
-     * @param template 子节点模版
-     * @param name     子节点名
+     * @param object 子节点模版
+     * @param name   子节点名
      * @return this
      */
-    public BaseNode addArgumentAndEnd(BaseNode template, String name) {
-        this.addArgument(template, name);
+    public BaseNode addArgumentAndEnd(BaseNode object, String name) {
+        this.addArgument(object, name);
         return this;
     }
 
@@ -173,16 +173,16 @@ public abstract class BaseNode {
      * <p>
      * 为该节点添加一个子节点,返回新建的节点.
      *
-     * @param template 子节点模版
-     * @param name     子节点名
-     * @param config   节点配置
+     * @param object 子节点模版
+     * @param name   子节点名
+     * @param config 节点配置
      * @return 新建的参数子节点
      */
-    public BaseNode addArgument(BaseNode template, String name, BaseNodeConfig config) {
-        template.setNodeName(name);
-        template.setConfig(config);
-        this.addChild(template);
-        return template;
+    public BaseNode addArgument(BaseNode object, String name, BaseNodeConfig config) {
+        object.setNodeName(name);
+        object.setConfig(config);
+        this.addChild(object);
+        return object;
     }
 
     /**
@@ -191,13 +191,13 @@ public abstract class BaseNode {
      * this.impl(xxx).end()的简写.
      * 添加一个参数子节点,返回此节点.
      *
-     * @param template 子节点模版
-     * @param name     子节点名
-     * @param config   节点配置
+     * @param object 子节点模版
+     * @param name   子节点名
+     * @param config 节点配置
      * @return this
      */
-    public BaseNode addArgumentAndEnd(BaseNode template, String name, BaseNodeConfig config) {
-        this.addArgument(template, name, config);
+    public BaseNode addArgumentAndEnd(BaseNode object, String name, BaseNodeConfig config) {
+        this.addArgument(object, name, config);
         return this;
     }
 
@@ -250,13 +250,13 @@ public abstract class BaseNode {
     /**
      * 添加可执行节点
      *
-     * @param template 模版
+     * @param object 模版
      * @return 可执行节点
      */
-    public ExecuteNode addExecuteNode(ExecuteNode template) {
-        template.setNodeName("EXECUTE_NODE:@" + template.hashCode());
-        this.addChild(template);
-        return template;
+    public ExecuteNode addExecuteNode(ExecuteNode object) {
+        object.setNodeName("EXECUTE_NODE:@" + object.hashCode());
+        this.addChild(object);
+        return object;
     }
 
     /**
