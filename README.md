@@ -36,7 +36,7 @@ softdepend:
 ```
 
 If your plugin depends on this project, please make sure to install the release version of
-Project [TreeCommandLib](https://github.com/XAS-Dev/TreeCommandLib)'s plugin when installing your own plugin on the
+project [TreeCommandLib](https://github.com/XAS-Dev/TreeCommandLib)'s plugin when installing your own plugin on the
 server.
 
 ## Usage Example
@@ -68,19 +68,19 @@ public class ExampleCommand extends JavaPlugin {
 
         // @formatter:off
         exampleCommand
-                .addExecuteNode((ctx, next) -> { // 添加一个执行节点,处理到该节点时执行对应方法
+                .addExecuteNode((ctx, next) -> { // Add an execution node, executes corresponding code when reached
                     ctx.getSender().sendMessage(ChatColor.GREEN + "✔ You successfully executed this command");
-                    if (ctx.isEndHere()){ // 判断指令是否在这里结束, 在这里结束即为没有输入任何子指令
+                    if (ctx.isEndHere()){ // Check if the command ends here, meaning no sub-commands were input
                         ctx.getSender().sendMessage("You did not input any sub commands");
                     }
-                    next.next(); // 处理下一层的节点
+                    next.next(); // Handle the next level of nodes
                 })
-                .addTerminalNode() // 添加一个可结束节点,代表可以在此处结束指令
-                .addSubCommand("help", (ctx, next) -> { // 添加子指令,返回新建的子指令节点
+                .addTerminalNode() // Add a terminal node, represents where the command can end
+                .addSubCommand("help", (ctx, next) -> { // Add a sub-command, returns a newly created sub-command node
                     ctx.getSender().sendMessage("help message");
                     next.next();
-                }).end() // 使用end()结束对子节点的设置
-                .addSubCommandAndEnd("awa", (ctx, next) -> { // 简化写法,添加子指令节点,直接结束对子指令节点设置
+                }).end() // Use end() to finish setting up the sub-node
+                .addSubCommandAndEnd("awa", (ctx, next) -> { // Simplified form, add a sub-command node and directly end its setup
                     ctx.getSender().sendMessage("qwq");
                     next.next();
                 })
@@ -90,15 +90,15 @@ public class ExampleCommand extends JavaPlugin {
                     player.chat("selected me!");
                     next.next();
                 })
-                        .addArgument(ArgumentType.PLAYER, "player").end() // 为子指令节点添加参数节点;使用end()结束对参数节点的设置
-                        .end() // 使用end()结束对子节点的设置
+                        .addArgument(ArgumentType.PLAYER, "player").end() // Add a parameter node for the sub-command; use end() to finish setting up the parameter node
+                        .end() // Use end() to finish setting up the sub-node
                 .addSubCommand("offline_player", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected an offline player");
                     OfflinePlayer player = ctx.get("offline_player", OfflinePlayer.class);
                     ctx.getSender().sendMessage("his or her name is " + player.getName() + " and UUID is " + player.getUniqueId());
                     next.next();
                 })
-                        .addArgumentAndEnd(ArgumentType.OFFLINE_PLAYER, "offline_player") // 简化写法,为子指令节点添加参数节点，直接结束对参数节点的设置
+                        .addArgumentAndEnd(ArgumentType.OFFLINE_PLAYER, "offline_player") // Simplified form, add a parameter node for the sub-command and directly end its setup
                 .end()
                 .addSubCommand("pos", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected a position: " + ctx.get("position", Location.class).toString());
@@ -121,9 +121,9 @@ public class ExampleCommand extends JavaPlugin {
                 .end()
                 .addSubCommand("selector", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected some entities:");
-                    List<Entity> entitys = ctx.get("selector", List.class);
-                    List<String> entityTypeList = new ArrayList<>(entitys.size());
-                    for (Entity entity:entitys){
+                    List<Entity> entities = ctx.get("selector", List.class);
+                    List<String> entityTypeList = new ArrayList<>(entities.size());
+                    for (Entity entity:entities){
                         entityTypeList.add(entity.getType().name());
                     }
                     ctx.getSender().sendMessage(String.join("; ", entityTypeList));
