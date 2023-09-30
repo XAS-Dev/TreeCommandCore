@@ -20,7 +20,7 @@ import java.util.List;
 
 public class TreeCommand extends RootNode implements TabExecutor {
     protected boolean showCompletionAfterFinish = false;
-    protected State state = new State(this);
+    protected State state = new State();
 
     public TreeCommand() {
     }
@@ -31,7 +31,7 @@ public class TreeCommand extends RootNode implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        this.state.load(args, sender, label);
+        this.state.load(this, args, sender, label);
 
         if (this.state.isSuccess()) {
             MiddlewareService.loadState(this.state).next();
@@ -45,27 +45,27 @@ public class TreeCommand extends RootNode implements TabExecutor {
      * 处理错误
      */
     public void onError() {
-        CommandSender sender = this.state.getSender();
-        String label = this.state.getLabel();
-        String[] args = this.state.getArgs();
-        switch (this.state.getException()) {
+        CommandSender sender = this.state.sender;
+        String label = this.state.label;
+        String[] args = this.state.args;
+        switch (this.state.exception) {
             case TOO_MANY_ARGS:
                 sender.sendMessage(ChatColor.RED + "错误的命令参数");
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getFailedStartIndex()));
+                sender.sendMessage(this.getErrorPrompt(label, args, this.state.failedStartIndex));
                 break;
             case TOO_FEW_ARGS:
                 sender.sendMessage(ChatColor.RED + "未知或不完整的指令");
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getFailedStartIndex()));
+                sender.sendMessage(this.getErrorPrompt(label, args, this.state.failedStartIndex));
                 break;
             case WRONG_ARGS:
-                this.state.getLastNode().getChildren().get(0);
+                this.state.lastNode.getChildren().get(0);
                 sender.sendMessage(ChatColor.RED + "需要...");// 未知的..类型
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getFailedStartIndex()));
+                sender.sendMessage(this.getErrorPrompt(label, args, this.state.failedStartIndex));
                 break;
             case NOT_COMPLETE:
-                this.state.getLastNode().getChildren().get(0);
+                this.state.lastNode.getChildren().get(0);
                 sender.sendMessage(ChatColor.RED + "不完整（需要...个...）");// 未知的..类型
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.getFailedStartIndex()));
+                sender.sendMessage(this.getErrorPrompt(label, args, this.state.failedStartIndex));
                 break;
         }
 
@@ -103,16 +103,16 @@ public class TreeCommand extends RootNode implements TabExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        this.state.load(Arrays.copyOfRange(args, 0, args.length - 1), sender, label);
+        this.state.load(this, Arrays.copyOfRange(args, 0, args.length - 1), sender, label);
         String lastArg = args[args.length - 1];
-        StateException errorReason = this.state.getException();
+        StateException errorReason = this.state.exception;
         if (errorReason == StateException.WRONG_ARGS) return new ArrayList<>();// 错误的参数 返回空数组
         List<String> completeList = new ArrayList<>();
-        for (BaseNode child : this.state.getLastNode().getChildren()) {
+        for (BaseNode child : this.state.lastNode.getChildren()) {
             // 获取所有Parseable Node 的补全并拼接
             if (!(child instanceof Parseable)) continue;
             Parseable parseableChild = (Parseable) child;
-            String[] needfulArgs = Arrays.copyOfRange(args, this.state.getProcessedArgc(), args.length);// 获取输入的参数
+            String[] needfulArgs = Arrays.copyOfRange(args, this.state.processedArgc, args.length);// 获取输入的参数
             String[] childComplete = parseableChild.getCompletion(sender, needfulArgs);// 获取补全
             if (childComplete == null) continue;// 没有补全,跳过,处理下一个节点
             completeList.addAll(Arrays.asList(childComplete));// 添加补全

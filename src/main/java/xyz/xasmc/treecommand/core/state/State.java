@@ -9,108 +9,37 @@ import xyz.xasmc.treecommand.core.node.marker.Parseable;
 import java.util.*;
 
 public class State {
-    protected RootNode rootNode; // 根节点
+    public RootNode rootNode; // 根节点
 
-    protected CommandSender commandSender = null; // 指令发送者
-    protected String label = null; // 指令标签
-    protected String[] args = null; // 参数列表
+    public CommandSender sender = null; // 指令发送者
+    public String label = null; // 指令标签
+    public String[] args = null; // 参数列表
 
-    protected List<Executable> executableNodes = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
-    protected BaseNode lastNode = null; // 结束节点(最后一个成功的节点)
+    public List<BaseNode> executableNodeList = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
+    public BaseNode lastNode = null; // 结束节点(最后一个成功的节点)
 
-    protected StateException exception = null; // 错误原因 成功则为null
-    protected BaseNode failedNode = null; // 错误节点
-    protected int failedStartIndex = -1;// 错误开始位置
-    protected int processedArgc = 0;// 处理完的参数数量
+    public StateException exception = null; // 错误原因 成功则为null
+    public BaseNode failedNode = null; // 错误节点
+    public int failedStartIndex = -1;// 错误开始位置
+    public int processedArgc = 0;// 处理完的参数数量
 
-    protected Map<String, Object> state = new HashMap<>();// 状态Map
-
-    // ===== init =====
-
-    /**
-     * 初始化
-     *
-     * @param rootNode 根节点
-     */
-    public State(RootNode rootNode) {
-        this.rootNode = rootNode;
-    }
-
-    // ===== getter, setter =====
-
-    public RootNode getRootNode() {
-        return this.rootNode;
-    }
-
-    public CommandSender getSender() {
-        return this.commandSender;
-    }
-
-    public String getLabel() {
-        return this.label;
-    }
-
-    public String[] getArgs() {
-        return this.args;
-    }
-
-    public List<Executable> getExecutableNodes() {
-        return this.executableNodes;
-    }
-
-    public BaseNode getLastNode() {
-        return this.lastNode;
-    }
-
-    public StateException getException() {
-        return this.exception;
-    }
-
-    public BaseNode getFailedNode() {
-        return this.failedNode;
-    }
-
-    public int getFailedStartIndex() {
-        return this.failedStartIndex;
-    }
-
-    public int getProcessedArgc() {
-        return this.processedArgc;
-    }
+    public Map<String, Object> state = new HashMap<>();// 状态Map
 
     public boolean isSuccess() {
         return this.exception == null;
     }
 
-    // ===== state =====
-
-    /**
-     * 获取状态值
-     *
-     * @param name 键
-     * @return 值
-     */
-    public Object getValue(String name) {
-        return this.state.get(name);
+    protected void setException(BaseNode lastNode, BaseNode failedNode, StateException exceptionReason, int failedStartIndex) {
+        this.lastNode = lastNode;
+        this.failedNode = failedNode;
+        this.exception = exceptionReason;
+        this.failedStartIndex = failedStartIndex;
     }
 
-    /**
-     * 获取状态值
-     *
-     * @param name 键
-     * @return 值
-     */
-    public <T> T getValue(String name, Class<T> type) {
-        return type.cast(this.state.get(name));
-    }
-
-    /**
-     * 获取状态Map
-     *
-     * @return 状态Map
-     */
-    public Map<String, Object> getStateMap() {
-        return this.state;
+    protected void setException(BaseNode lastNode, StateException exceptionReason, int failedStartIndex) {
+        this.lastNode = lastNode;
+        this.exception = exceptionReason;
+        this.failedStartIndex = failedStartIndex;
     }
 
     // ===== load =====
@@ -120,10 +49,11 @@ public class State {
      *
      * @param args 参数数组
      */
-    public boolean load(String[] args, CommandSender sender, String label) {
+    public boolean load(RootNode rootNode, String[] args, CommandSender sender, String label) {
         this.reload();
+        this.rootNode = rootNode;
         this.args = args;
-        this.commandSender = sender;
+        this.sender = sender;
         this.label = label;
 
         BaseNode node = this.rootNode;
@@ -131,11 +61,11 @@ public class State {
         while (true) {
             if (node instanceof Executable) {
                 // 是可执行节点，添加到可执行节点列表
-                this.executableNodes.add((Executable) node);
+                this.executableNodeList.add(node);
             }
             if (node.isLeafNode() && processingArgs.length != 0) {
                 // 没节点,还有参数,错误
-                this.setError(node, StateException.TOO_MANY_ARGS, processedArgc);
+                this.setException(node, StateException.TOO_MANY_ARGS, this.processedArgc);
                 return false;
             }
             if (processingArgs.length == 0) {
@@ -164,7 +94,7 @@ public class State {
                         this.processedArgc += argsQuantity;
                         processingArgs = Arrays.copyOfRange(processingArgs, argsQuantity, processingArgs.length);
                         // 清空错误信息
-                        this.setError(null, null, null, -1);
+                        this.setException(null, null, null, -1);
                         // 下一层节点
                         node = child;
                         isParseSuccess = true;
@@ -173,7 +103,7 @@ public class State {
                         // 参数不足,不完整
                         // 添加错误信息,不返回错误
                         // 继续遍历下面的节点,如果后面的节点匹配成功会覆盖错误信息
-                        this.setError(node, child, StateException.NOT_COMPLETE, processedArgc);
+                        this.setException(node, child, StateException.NOT_COMPLETE, this.processedArgc);
                         // 下一个节点
                         continue;// 不完整,换下一个子节点
                     }
@@ -200,11 +130,11 @@ public class State {
                     }
                     // 节点不可结束
                     // 参数过少
-                    this.setError(node, StateException.TOO_FEW_ARGS, this.processedArgc);
+                    this.setException(node, StateException.TOO_FEW_ARGS, this.processedArgc);
                 } else {
                     // 还有未处理的参数
                     // 错误的参数
-                    this.setError(node, StateException.WRONG_ARGS, this.processedArgc);
+                    this.setException(node, StateException.WRONG_ARGS, this.processedArgc);
                 }
                 return false;
             }
@@ -213,11 +143,11 @@ public class State {
     }
 
     protected void reload() {
-        this.commandSender = null; // 指令发送者
+        this.sender = null; // 指令发送者
         this.label = null; // 指令标签
         this.args = null; // 参数列表
 
-        this.executableNodes = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
+        this.executableNodeList = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
         this.lastNode = null; // 结束节点
 
         this.exception = null; // 错误原因 成功则为null
@@ -226,18 +156,5 @@ public class State {
         this.processedArgc = 0;// 处理完的参数数量
 
         this.state = new HashMap<>();// 状态Map
-    }
-
-    protected void setError(BaseNode lastNode, BaseNode errorNode, StateException errorReason, int errorStartIndex) {
-        this.lastNode = lastNode;
-        this.failedNode = errorNode;
-        this.exception = errorReason;
-        this.failedStartIndex = errorStartIndex;
-    }
-
-    protected void setError(BaseNode lastNode, StateException errorReason, int errorStartIndex) {
-        this.lastNode = lastNode;
-        this.exception = errorReason;
-        this.failedStartIndex = errorStartIndex;
     }
 }

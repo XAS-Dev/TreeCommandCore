@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PositionNode extends BaseNode implements Parseable {
+public class LocationNode extends BaseNode implements Parseable {
     // ===== Parseable =====
     @Nullable
     @Override
@@ -26,18 +26,18 @@ public class PositionNode extends BaseNode implements Parseable {
         String[] resultArray = {"~", "~", "~"};
         if (sender instanceof Player) { // 发送者是玩家
             Player player = (Player) sender;
-            Vector position = Intersection.getIntersectionWithBlock(player);
-            if (position != null) { // 玩家指针与方块有交点
-                resultArray[0] = String.format("%.2f", position.getX());
-                resultArray[1] = String.format("%.2f", position.getY());
-                resultArray[2] = String.format("%.2f", position.getZ());
+            Vector intersectionPoint = Intersection.getIntersectionWithBlock(player);
+            if (intersectionPoint != null) { // 玩家指针与方块有交点
+                resultArray[0] = String.format("%.2f", intersectionPoint.getX());
+                resultArray[1] = String.format("%.2f", intersectionPoint.getY());
+                resultArray[2] = String.format("%.2f", intersectionPoint.getZ());
             }
         }
-        Pattern numberPattern = Pattern.compile("^(~)?([-+]?(?:\\d*\\.\\d+|\\d+\\.\\d*|\\d+))?$");
+        Pattern valuePattern = Pattern.compile("^(~)?([-+]?(?:\\d*\\.\\d+|\\d+\\.\\d*|\\d+))?$");
         for (int i = 0; i < Math.min(args.length, 3); i++) {
             // 匹配参数是否合法
             if (args[i].isEmpty()) break;
-            if (!numberPattern.matcher(args[i]).matches()) return null; // 不匹配,返回null
+            if (!valuePattern.matcher(args[i]).matches()) return null; // 不匹配,返回null
             resultArray[i] = args[i];
         }
         // 返回结果

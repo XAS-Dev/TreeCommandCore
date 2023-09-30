@@ -8,7 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xasmc.treecommand.core.TreeCommand;
-import xyz.xasmc.treecommand.core.node.NodeType;
+import xyz.xasmc.treecommand.core.node.ArgumentType;
 import xyz.xasmc.treecommand.core.node.config.EnumNodeConfig;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class TestTreeCommand extends JavaPlugin {
                     player.chat("selected me!");
                     next.next();
                 })
-                        .addArgument(NodeType.PLAYER, "player").end() // 为子指令节点添加参数节点;使用end()结束对参数节点的设置
+                        .addArgument(ArgumentType.PLAYER, "player").end() // 为子指令节点添加参数节点;使用end()结束对参数节点的设置
                 .end() // 使用end()结束对子节点的设置
                 .addSubCommand("offline_player", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected an offline player");
@@ -53,26 +53,26 @@ public class TestTreeCommand extends JavaPlugin {
                     ctx.getSender().sendMessage("his or her name is " + player.getName() + " and UUID is " + player.getUniqueId());
                     next.next();
                 })
-                        .addArgumentAndEnd(NodeType.OFFLINE_PLAYER, "offline_player") // 简化写法,为子指令节点添加参数节点，直接结束对参数节点的设置
+                        .addArgumentAndEnd(ArgumentType.OFFLINE_PLAYER, "offline_player") // 简化写法,为子指令节点添加参数节点，直接结束对参数节点的设置
                 .end()
-                .addSubCommand("pos", (ctx, next) -> {
-                    ctx.getSender().sendMessage("you selected a position: " + ctx.getValue("position", Location.class).toString());
+                .addSubCommand("location", (ctx, next) -> {
+                    ctx.getSender().sendMessage("you selected a location: " + ctx.getValue("location", Location.class).toString());
                     next.next();
                 })
-                        .addArgumentAndEnd(NodeType.POSITION, "position")
+                        .addArgumentAndEnd(ArgumentType.LOCATION, "location")
                 .end()
                 .addSubCommand("block", (ctx, next) -> {
                     Block block = ctx.getValue("block", Block.class);
                     ctx.getSender().sendMessage("you selected a block: " + String.format("(%d, %d, %d) %s", block.getX(), block.getY(), block.getZ(), block.getType()));
                     next.next();
                 })
-                        .addArgumentAndEnd(NodeType.BLOCK, "block")
+                        .addArgumentAndEnd(ArgumentType.BLOCK, "block")
                 .end()
                 .addSubCommand("enum", (ctx, next) -> {
                     ctx.getSender().sendMessage("you chose: "+ ctx.getValue("enum", String.class));
                     next.next();
                 })
-                    .addArgumentAndEnd(NodeType.ENUM,"enum",new EnumNodeConfig(new String[]{"a", "b", "c"}))
+                    .addArgumentAndEnd(ArgumentType.ENUM,"enum",new EnumNodeConfig(new String[]{"a", "b", "c"}))
                 .end()
                 .addSubCommand("selector", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected some entities:");
@@ -84,7 +84,7 @@ public class TestTreeCommand extends JavaPlugin {
                     ctx.getSender().sendMessage(String.join("; ", entityTypeList));
                     next.next();
                 })
-                .addArgumentAndEnd(NodeType.SELECTOR, "selector")
+                .addArgumentAndEnd(ArgumentType.SELECTOR, "selector")
         ;
         // @formatter:on
 

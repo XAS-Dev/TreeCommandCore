@@ -25,18 +25,18 @@ public class BlockNode extends BaseNode implements Parseable {
         String[] resultArray = {"~", "~", "~"};
         if (sender instanceof Player) { // 发送者是玩家
             Player player = (Player) sender;
-            Block block = player.getTargetBlockExact(4); // 获取选中的方块坐标
-            Location blockLocation = block == null ? null : block.getLocation();
+            Block targetBlock = player.getTargetBlockExact(4); // 获取选中的方块坐标
+            Location blockLocation = targetBlock == null ? null : targetBlock.getLocation();
             if (blockLocation != null) { // 玩家指针选中了一个方块
                 resultArray[0] = String.format("%.0f", blockLocation.getX());
                 resultArray[1] = String.format("%.0f", blockLocation.getY());
                 resultArray[2] = String.format("%.0f", blockLocation.getZ());
             }
         }
-        Pattern numberPattern = Pattern.compile("^(~)?([+-][0-9]+|[0-9]+)?$");
+        Pattern valuePattern = Pattern.compile("^(~)?([+-][0-9]+|[0-9]+)?$");
         for (int i = 0; i < Math.min(args.length, 3); i++) {
             if (args[i].isEmpty()) break;
-            if (!numberPattern.matcher(args[i]).matches()) return null;
+            if (!valuePattern.matcher(args[i]).matches()) return null;
             resultArray[i] = args[i];
         }
         // 返回结果

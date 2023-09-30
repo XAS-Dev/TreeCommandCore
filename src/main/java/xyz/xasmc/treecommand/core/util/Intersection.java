@@ -8,7 +8,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
-public class Intersection {
+public abstract class Intersection {
     /**
      * 获取玩家视线与方块的碰撞点
      *

@@ -1,10 +1,10 @@
 package xyz.xasmc.treecommand.core.node;
 
-public enum NodeType {
+public enum ArgumentType {
     BLOCK,
     ENUM,
+    LOCATION,
     OFFLINE_PLAYER,
     PLAYER,
-    POSITION,
     SELECTOR,
 }

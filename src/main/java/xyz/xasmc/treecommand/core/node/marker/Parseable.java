@@ -1,11 +1,10 @@
 package xyz.xasmc.treecommand.core.node.marker;
 
 import org.bukkit.command.CommandSender;
-import xyz.xasmc.treecommand.core.node.NodeInter;
 
 import javax.annotation.Nullable;
 
-public interface Parseable extends NodeInter {
+public interface Parseable {
     /**
      * 处理参数
      *
