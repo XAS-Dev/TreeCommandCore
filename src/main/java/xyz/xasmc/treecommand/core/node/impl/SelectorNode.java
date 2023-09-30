@@ -6,16 +6,16 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import xyz.xasmc.treecommand.core.node.BaseNode;
-import xyz.xasmc.treecommand.core.node.marker.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parsable;
 import xyz.xasmc.treecommand.core.util.Intersection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SelectorNode extends BaseNode implements Parseable {
+public class SelectorNode extends BaseNode implements Parsable {
     private final String[] selectors = {"@p", "@r", "@a", "@e", "@s"};
-    // ===== Parseable =====
+    // ===== Parsable =====
 
     @Override
     public Object parseArgument(CommandSender sender, String[] args) {

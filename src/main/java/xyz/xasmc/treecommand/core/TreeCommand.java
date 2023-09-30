@@ -13,7 +13,7 @@ import xyz.xasmc.treecommand.core.middleware.StateExceptionReason;
 import xyz.xasmc.treecommand.core.middleware.functional.Middleware;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
-import xyz.xasmc.treecommand.core.node.marker.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parsable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,10 +109,10 @@ public class TreeCommand extends RootNode implements TabExecutor {
         List<String> completeList = new ArrayList<>();
         for (BaseNode child : context.getLastNode().getChildren()) {
             // 获取所有Parseable Node 的补全并拼接
-            if (!(child instanceof Parseable)) continue;
-            Parseable parseableChild = (Parseable) child;
+            if (!(child instanceof Parsable)) continue;
+            Parsable parsableChild = (Parsable) child;
             String[] needfulArgs = Arrays.copyOfRange(args, context.getProcessedArgsCount(), args.length);// 获取输入的参数
-            String[] childComplete = parseableChild.getCompletion(sender, needfulArgs);// 获取补全
+            String[] childComplete = parsableChild.getCompletion(sender, needfulArgs);// 获取补全
             if (childComplete == null) continue;// 没有补全,跳过,处理下一个节点
             completeList.addAll(Arrays.asList(childComplete));// 添加补全
         }

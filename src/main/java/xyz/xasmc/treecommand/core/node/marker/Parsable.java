@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import javax.annotation.Nullable;
 
-public interface Parseable {
+public interface Parsable {
     /**
      * 处理参数
      *

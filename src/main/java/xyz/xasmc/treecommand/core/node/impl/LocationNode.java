@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 import xyz.xasmc.treecommand.core.node.BaseNode;
-import xyz.xasmc.treecommand.core.node.marker.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parsable;
 import xyz.xasmc.treecommand.core.util.Intersection;
 
 import java.util.ArrayList;
@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LocationNode extends BaseNode implements Parseable {
-    // ===== Parseable =====
+public class LocationNode extends BaseNode implements Parsable {
+    // ===== Parsable =====
     @Nullable
     @Override
     public String[] getCompletion(CommandSender sender, String[] args) {

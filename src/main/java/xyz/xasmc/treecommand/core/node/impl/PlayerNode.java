@@ -5,14 +5,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.config.PlayerNodeConfig;
-import xyz.xasmc.treecommand.core.node.marker.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parsable;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class PlayerNode extends BaseNode implements Parseable {
+public class PlayerNode extends BaseNode implements Parsable {
     protected PlayerNodeConfig config = new PlayerNodeConfig();
 
     @Override
@@ -20,7 +20,7 @@ public class PlayerNode extends BaseNode implements Parseable {
         this.config = (PlayerNodeConfig) super.config;
     }
 
-    // ===== Parseable =====
+    // ===== Parsable =====
     @Override
     @Nullable
     public String[] getCompletion(CommandSender sender, String[] args) {

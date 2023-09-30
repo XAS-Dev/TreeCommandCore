@@ -4,11 +4,11 @@ import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.config.SubCommandNodeConfig;
 import xyz.xasmc.treecommand.core.node.marker.Executable;
-import xyz.xasmc.treecommand.core.node.marker.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parsable;
 
 import javax.annotation.Nullable;
 
-public class SubCommandNode extends BaseNode implements Parseable, Executable {
+public class SubCommandNode extends BaseNode implements Parsable, Executable {
     protected SubCommandNodeConfig config = new SubCommandNodeConfig();
 
     @Override
@@ -16,7 +16,7 @@ public class SubCommandNode extends BaseNode implements Parseable, Executable {
         this.config = (SubCommandNodeConfig) super.config;
     }
 
-    // ===== Parseable =====
+    // ===== Parsable =====
 
     @Override
     public Object parseArgument(CommandSender sender, String[] args) {

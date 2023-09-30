@@ -79,9 +79,9 @@ public class TestTreeCommand extends JavaPlugin {
                 .end()
                 .addSubCommand("selector", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected some entities:");
-                    List<Entity> entitys = ctx.get("selector", List.class);
-                    List<String> entityTypeList = new ArrayList<>(entitys.size());
-                    for (Entity entity:entitys){
+                    List<Entity> entities = ctx.get("selector", List.class);
+                    List<String> entityTypeList = new ArrayList<>(entities.size());
+                    for (Entity entity:entities){
                         entityTypeList.add(entity.getType().name());
                     }
                     ctx.getSender().sendMessage(String.join("; ", entityTypeList));

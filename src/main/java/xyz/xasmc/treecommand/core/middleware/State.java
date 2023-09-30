@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
 import xyz.xasmc.treecommand.core.node.marker.Executable;
-import xyz.xasmc.treecommand.core.node.marker.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parsable;
 
 import java.util.*;
 
@@ -77,15 +77,15 @@ public class State {
             // 遍历子节点,寻找匹配的项
             boolean isParseSuccess = false;
             for (BaseNode child : node.getChildren()) {
-                int argsQuantity = child instanceof Parseable ? ((Parseable) child).getArgsQuantity(processingArgs) : 0;
+                int argsQuantity = child instanceof Parsable ? ((Parsable) child).getArgsQuantity(processingArgs) : 0;
                 if (argsQuantity != -1) {
                     // 匹配成功
                     if (argsQuantity <= processingArgs.length) {
                         // 参数足够
-                        if (child instanceof Parseable) {
+                        if (child instanceof Parsable) {
                             // 可处理的
                             // 参数足够,处理参数并添加到状态Map中
-                            this.state.put(child.getNodeName(), ((Parseable) child).parseArgument(sender, processingArgs));
+                            this.state.put(child.getNodeName(), ((Parsable) child).parseArgument(sender, processingArgs));
                         }
                         // 重新设置处理中的参数数组
                         this.processedArgsCount += argsQuantity;

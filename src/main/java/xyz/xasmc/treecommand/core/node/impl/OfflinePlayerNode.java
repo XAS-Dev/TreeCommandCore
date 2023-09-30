@@ -5,11 +5,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.config.OfflinePlayerNodeConfig;
-import xyz.xasmc.treecommand.core.node.marker.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parsable;
 
 import javax.annotation.Nullable;
 
-public class OfflinePlayerNode extends BaseNode implements Parseable {
+public class OfflinePlayerNode extends BaseNode implements Parsable {
     protected OfflinePlayerNodeConfig config = new OfflinePlayerNodeConfig();
 
     @Override
@@ -17,7 +17,7 @@ public class OfflinePlayerNode extends BaseNode implements Parseable {
         this.config = (OfflinePlayerNodeConfig) super.config;
     }
 
-    // ===== Parseable =====
+    // ===== Parsable =====
 
     @Override
     @Nullable
@@ -43,6 +43,7 @@ public class OfflinePlayerNode extends BaseNode implements Parseable {
     @Nullable
     @Override
     public Object parseArgument(CommandSender sender, String[] args) {
+        // TODO
         return Bukkit.getOfflinePlayer(args[0]);
     }
 

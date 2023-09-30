@@ -4,9 +4,9 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.config.EnumNodeConfig;
-import xyz.xasmc.treecommand.core.node.marker.Parseable;
+import xyz.xasmc.treecommand.core.node.marker.Parsable;
 
-public class EnumNode extends BaseNode implements Parseable {
+public class EnumNode extends BaseNode implements Parsable {
     protected EnumNodeConfig config = new EnumNodeConfig(new String[]{"not_specified_awa"});
 
     @Override
@@ -14,7 +14,7 @@ public class EnumNode extends BaseNode implements Parseable {
         this.config = (EnumNodeConfig) super.config;
     }
 
-    // ===== Parseable =====
+    // ===== Parsable =====
 
     @Override
     public Object parseArgument(CommandSender sender, String[] args) {
