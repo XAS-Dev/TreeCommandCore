@@ -4,27 +4,39 @@ A Bukkit plugin dependency for simplifying the definition of commands used withi
 
 ## Getting Started
 
-To use TreeCommandCore in your Spigot plugin project, you can add it as a dependency in your `pom.xml` file. First, add the XAS repository to your repositories section:
+To use TreeCommandCore in your Spigot plugin project, you can add it as a dependency in your `pom.xml` file. First, add
+the XAS repository to your repositories section:
 
 ```xml
-        <repository>
-            <id>xas</id>
-            <url>https://maven.xasmc.xyz/repository/xas/</url>
-        </repository>
+
+<repository>
+    <id>xas</id>
+    <url>https://maven.xasmc.xyz/repository/xas/</url>
+</repository>
 ```
 
 Next, add TreeCommandCore as a dependency:
 
 ```xml
-        <dependency>
-            <groupId>xyz.xasmc</groupId>
-            <artifactId>TreeCommandCore</artifactId>
-            <version>FILL_IN_THE_VERSION_NUMBER_HERE</version>
-            <scope>compile</scope>
-        </dependency>
+
+<dependency>
+    <groupId>xyz.xasmc</groupId>
+    <artifactId>TreeCommandCore</artifactId>
+    <version>0.1.0</version>
+    <scope>provided</scope>
+</dependency>
 ```
 
-Be sure to replace `FILL_IN_THE_VERSION_NUMBER_HERE` with the actual version number you want to use.
+You should then add the Bukkit plugin for this project to the dependency list. Edit the `plugin.yml`
+
+```yaml
+softdepend:
+  - "TreeCommandLib"
+```
+
+If your plugin depends on this project, please make sure to install the release version of
+Project [TreeCommandLib](https://github.com/XAS-Dev/TreeCommandLib)'s plugin when installing your own plugin on the
+server.
 
 ## Usage Example
 
@@ -75,34 +87,34 @@ public class ExampleCommand extends JavaPlugin {
                     player.chat("selected me!");
                     next.next();
                 })
-                .addArgument(ArgumentType.PLAYER, "player").end() // 为子指令节点添加参数节点;使用end()结束对参数节点的设置
-                .end() // 使用end()结束对子节点的设置
+                        .addArgument(ArgumentType.PLAYER, "player").end() // 为子指令节点添加参数节点;使用end()结束对参数节点的设置
+                        .end() // 使用end()结束对子节点的设置
                 .addSubCommand("offline_player", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected an offline player");
                     OfflinePlayer player = ctx.get("offline_player", OfflinePlayer.class);
                     ctx.getSender().sendMessage("his or her name is " + player.getName() + " and UUID is " + player.getUniqueId());
                     next.next();
                 })
-                .addArgumentAndEnd(ArgumentType.OFFLINE_PLAYER, "offline_player") // 简化写法,为子指令节点添加参数节点，直接结束对参数节点的设置
+                        .addArgumentAndEnd(ArgumentType.OFFLINE_PLAYER, "offline_player") // 简化写法,为子指令节点添加参数节点，直接结束对参数节点的设置
                 .end()
                 .addSubCommand("pos", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected a position: " + ctx.get("position", Location.class).toString());
                     next.next();
                 })
-                .addArgumentAndEnd(ArgumentType.LOCATION, "position")
+                        .addArgumentAndEnd(ArgumentType.LOCATION, "position")
                 .end()
                 .addSubCommand("block", (ctx, next) -> {
                     Block block = ctx.get("block", Block.class);
                     ctx.getSender().sendMessage("you selected a block: " + String.format("(%d, %d, %d) %s", block.getX(), block.getY(), block.getZ(), block.getType()));
                     next.next();
                 })
-                .addArgumentAndEnd(ArgumentType.BLOCK, "block")
+                        .addArgumentAndEnd(ArgumentType.BLOCK, "block")
                 .end()
                 .addSubCommand("enum", (ctx, next) -> {
                     ctx.getSender().sendMessage("you chose: "+ ctx.get("enum", String.class));
                     next.next();
                 })
-                .addArgumentAndEnd(ArgumentType.ENUM,"enum",new EnumNodeConfig(new String[]{"a", "b", "c"}))
+                        .addArgumentAndEnd(ArgumentType.ENUM,"enum",new EnumNodeConfig(new String[]{"a", "b", "c"}))
                 .end()
                 .addSubCommand("selector", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected some entities:");
@@ -114,7 +126,8 @@ public class ExampleCommand extends JavaPlugin {
                     ctx.getSender().sendMessage(String.join("; ", entityTypeList));
                     next.next();
                 })
-                .addArgumentAndEnd(ArgumentType.SELECTOR, "selector")
+                        .addArgumentAndEnd(ArgumentType.SELECTOR, "selector")
+                .end()
         ;
         // @formatter:on
 
