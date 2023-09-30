@@ -1,6 +1,7 @@
 # TreeCommandCore
 
-A Bukkit plugin dependency for simplifying the definition of commands used within Bukkit plugins.
+A Bukkit plugin dependency for simplifying the definition of commands used within Bukkit plugins. This project is called
+TreeCommand, but it uses a graph structure to process commands
 
 ## Getting Started
 
