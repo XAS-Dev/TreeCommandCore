@@ -53,7 +53,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xasmc.treecommand.core.TreeCommand;
 import xyz.xasmc.treecommand.core.node.ArgumentType;
-import xyz.xasmc.treecommand.core.node.NodeType;
 import xyz.xasmc.treecommand.core.node.config.EnumNodeConfig;
 
 import java.util.ArrayList;

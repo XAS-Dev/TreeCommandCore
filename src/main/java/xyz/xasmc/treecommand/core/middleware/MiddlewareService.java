@@ -26,7 +26,7 @@ public class MiddlewareService {
         return result;
     }
 
-    protected static void BaseMiddleware(BaseContext ctx, NextMiddleware next) {
+    protected static void BaseMiddleware(Context ctx, NextMiddleware next) {
         next.next();
     }
 }
