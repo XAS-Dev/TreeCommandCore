@@ -70,6 +70,9 @@ public class ExampleCommand extends JavaPlugin {
         exampleCommand
                 .addExecuteNode((ctx, next) -> { // 添加一个执行节点,处理到该节点时执行对应方法
                     ctx.getSender().sendMessage(ChatColor.GREEN + "✔ You successfully executed this command");
+                    if (ctx.isEndHere()){ // 判断指令是否在这里结束, 在这里结束即为没有输入任何子指令
+                        ctx.getSender().sendMessage("You did not input any sub commands");
+                    }
                     next.next(); // 处理下一层的节点
                 })
                 .addTerminalNode() // 添加一个可结束节点,代表可以在此处结束指令

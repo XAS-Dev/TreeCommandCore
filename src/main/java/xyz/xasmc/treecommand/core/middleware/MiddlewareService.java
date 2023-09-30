@@ -20,13 +20,13 @@ public class MiddlewareService {
         Collections.reverse(executableList);
         NextMiddleware result = new NextMiddleware(); // 最内层的middleware
         for (BaseNode node : executableList) {
-            result = new NextMiddleware(context, node.getMiddleware(), result);
+            result = new NextMiddleware(context, node, node.getMiddleware(), result);
         }
-        result = new NextMiddleware(context, MiddlewareService::BaseMiddleware, result);
+        result = new NextMiddleware(context, null, MiddlewareService::BaseMiddleware, result);
         return result;
     }
 
-    public static void BaseMiddleware(BaseContext ctx, NextMiddleware next) {
+    protected static void BaseMiddleware(BaseContext ctx, NextMiddleware next) {
         next.next();
     }
 }
