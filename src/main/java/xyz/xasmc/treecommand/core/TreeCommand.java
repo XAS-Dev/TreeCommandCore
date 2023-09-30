@@ -6,13 +6,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.xasmc.treecommand.core.middleware.Context;
 import xyz.xasmc.treecommand.core.middleware.MiddlewareService;
+import xyz.xasmc.treecommand.core.middleware.StateException;
+import xyz.xasmc.treecommand.core.middleware.StateExceptionReason;
 import xyz.xasmc.treecommand.core.middleware.functional.Middleware;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
 import xyz.xasmc.treecommand.core.node.marker.Parseable;
-import xyz.xasmc.treecommand.core.state.State;
-import xyz.xasmc.treecommand.core.state.StateException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +21,6 @@ import java.util.List;
 
 public class TreeCommand extends RootNode implements TabExecutor {
     protected boolean showCompletionAfterFinish = false;
-    protected State state = new State();
 
     public TreeCommand() {
     }
@@ -31,12 +31,12 @@ public class TreeCommand extends RootNode implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        this.state.load(this, args, sender, label);
+        Context context = MiddlewareService.createContext(this, args, sender, label);
 
-        if (this.state.isSuccess()) {
-            MiddlewareService.loadState(this.state).next();
+        if (context.isSuccess()) {
+            MiddlewareService.loadContext(context).next();
         } else {
-            this.onError();
+            this.onError(context);
         }
         return true;
     }
@@ -44,32 +44,30 @@ public class TreeCommand extends RootNode implements TabExecutor {
     /**
      * 处理错误
      */
-    public void onError() {
-        CommandSender sender = this.state.sender;
-        String label = this.state.label;
-        String[] args = this.state.args;
-        switch (this.state.exception) {
+    public void onError(Context context) {
+        CommandSender sender = context.getSender();
+        String label = context.getLabel();
+        String[] args = context.getArgs();
+        switch (context.getException().getReason()) {
             case TOO_MANY_ARGS:
                 sender.sendMessage(ChatColor.RED + "错误的命令参数");
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.failedStartIndex));
+                sender.sendMessage(this.getErrorPrompt(label, args, context.getException().getFailedStartIndex()));
                 break;
             case TOO_FEW_ARGS:
                 sender.sendMessage(ChatColor.RED + "未知或不完整的指令");
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.failedStartIndex));
+                sender.sendMessage(this.getErrorPrompt(label, args, context.getException().getFailedStartIndex()));
                 break;
             case WRONG_ARGS:
-                this.state.lastNode.getChildren().get(0);
+                context.getLastNode().getChildren().get(0);
                 sender.sendMessage(ChatColor.RED + "需要...");// 未知的..类型
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.failedStartIndex));
+                sender.sendMessage(this.getErrorPrompt(label, args, context.getException().getFailedStartIndex()));
                 break;
             case NOT_COMPLETE:
-                this.state.lastNode.getChildren().get(0);
+                context.getLastNode().getChildren().get(0);
                 sender.sendMessage(ChatColor.RED + "不完整（需要...个...）");// 未知的..类型
-                sender.sendMessage(this.getErrorPrompt(label, args, this.state.failedStartIndex));
+                sender.sendMessage(this.getErrorPrompt(label, args, context.getException().getFailedStartIndex()));
                 break;
         }
-
-
     }
 
     /**
@@ -103,16 +101,17 @@ public class TreeCommand extends RootNode implements TabExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        this.state.load(this, Arrays.copyOfRange(args, 0, args.length - 1), sender, label);
+        Context context = MiddlewareService.createContext(this, Arrays.copyOfRange(args, 0, args.length - 1), sender, label);
         String lastArg = args[args.length - 1];
-        StateException errorReason = this.state.exception;
-        if (errorReason == StateException.WRONG_ARGS) return new ArrayList<>();// 错误的参数 返回空数组
+        StateException stateException = context.getException();
+        StateExceptionReason stateExceptionReason = stateException == null ? null : stateException.getReason();
+        if (stateExceptionReason == StateExceptionReason.WRONG_ARGS) return new ArrayList<>();// 错误的参数 返回空数组
         List<String> completeList = new ArrayList<>();
-        for (BaseNode child : this.state.lastNode.getChildren()) {
+        for (BaseNode child : context.getLastNode().getChildren()) {
             // 获取所有Parseable Node 的补全并拼接
             if (!(child instanceof Parseable)) continue;
             Parseable parseableChild = (Parseable) child;
-            String[] needfulArgs = Arrays.copyOfRange(args, this.state.processedArgc, args.length);// 获取输入的参数
+            String[] needfulArgs = Arrays.copyOfRange(args, context.getProcessedArgsCount(), args.length);// 获取输入的参数
             String[] childComplete = parseableChild.getCompletion(sender, needfulArgs);// 获取补全
             if (childComplete == null) continue;// 没有补全,跳过,处理下一个节点
             completeList.addAll(Arrays.asList(childComplete));// 添加补全

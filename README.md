@@ -71,7 +71,7 @@ public class ExampleCommand extends JavaPlugin {
                 })
                 .addSubCommand("player", (ctx,next)->{
                     ctx.getSender().sendMessage("you selected a player");
-                    Player player = ctx.getValue("player", Player.class);
+                    Player player = ctx.get("player", Player.class);
                     player.chat("selected me!");
                     next.next();
                 })
@@ -79,34 +79,34 @@ public class ExampleCommand extends JavaPlugin {
                 .end() // 使用end()结束对子节点的设置
                 .addSubCommand("offline_player", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected an offline player");
-                    OfflinePlayer player = ctx.getValue("offline_player", OfflinePlayer.class);
+                    OfflinePlayer player = ctx.get("offline_player", OfflinePlayer.class);
                     ctx.getSender().sendMessage("his or her name is " + player.getName() + " and UUID is " + player.getUniqueId());
                     next.next();
                 })
                 .addArgumentAndEnd(ArgumentType.OFFLINE_PLAYER, "offline_player") // 简化写法,为子指令节点添加参数节点，直接结束对参数节点的设置
                 .end()
                 .addSubCommand("pos", (ctx, next) -> {
-                    ctx.getSender().sendMessage("you selected a position: " + ctx.getValue("position", Location.class).toString());
+                    ctx.getSender().sendMessage("you selected a position: " + ctx.get("position", Location.class).toString());
                     next.next();
                 })
                 .addArgumentAndEnd(ArgumentType.LOCATION, "position")
                 .end()
                 .addSubCommand("block", (ctx, next) -> {
-                    Block block = ctx.getValue("block", Block.class);
+                    Block block = ctx.get("block", Block.class);
                     ctx.getSender().sendMessage("you selected a block: " + String.format("(%d, %d, %d) %s", block.getX(), block.getY(), block.getZ(), block.getType()));
                     next.next();
                 })
                 .addArgumentAndEnd(ArgumentType.BLOCK, "block")
                 .end()
                 .addSubCommand("enum", (ctx, next) -> {
-                    ctx.getSender().sendMessage("you chose: "+ ctx.getValue("enum", String.class));
+                    ctx.getSender().sendMessage("you chose: "+ ctx.get("enum", String.class));
                     next.next();
                 })
                 .addArgumentAndEnd(ArgumentType.ENUM,"enum",new EnumNodeConfig(new String[]{"a", "b", "c"}))
                 .end()
                 .addSubCommand("selector", (ctx, next) -> {
                     ctx.getSender().sendMessage("you selected some entities:");
-                    List<Entity> entitys = ctx.getValue("selector", List.class);
+                    List<Entity> entitys = ctx.get("selector", List.class);
                     List<String> entityTypeList = new ArrayList<>(entitys.size());
                     for (Entity entity:entitys){
                         entityTypeList.add(entity.getType().name());

@@ -1,10 +1,16 @@
 package xyz.xasmc.treecommand.core.middleware;
 
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
-import xyz.xasmc.treecommand.core.state.State;
 
+import java.util.List;
 import java.util.Map;
 
 public abstract class BaseContext {
@@ -14,7 +20,7 @@ public abstract class BaseContext {
         this.state = state;
     }
 
-    // ===== State =====
+    // ===== State attribute =====
 
     public State getState() {
         return this.state;
@@ -36,6 +42,15 @@ public abstract class BaseContext {
         return this.state.args;
     }
 
+    @Nullable
+    public StateException getException() {
+        return this.state.exception;
+    }
+
+    public int getProcessedArgsCount() {
+        return this.state.processedArgsCount;
+    }
+
     public BaseNode getLastNode() {
         return this.state.lastNode;
     }
@@ -44,11 +59,45 @@ public abstract class BaseContext {
         return this.state.state;
     }
 
-    public Object getValue(String name) {
-        return this.state.state.get(name);
+    // ===== State method =====
+
+    public boolean isSuccess() {
+        return this.state.isSuccess();
     }
 
-    public <T> T getValue(String name, Class<T> type) {
-        return type.cast(this.state.state.get(name));
+    // ===== state =====
+
+    public Object get(String key) {
+        return this.state.state.get(key);
+    }
+
+    public <T> T get(String key, Class<T> type) {
+        return type.cast(this.state.state.get(key));
+    }
+
+    // ===== ArgumentNode =====
+
+    public Block getBlock(String key) {
+        return (Block) this.get(key);
+    }
+
+    public String getEnum(String key) {
+        return (String) this.get(key);
+    }
+
+    public Location getLocation(String key) {
+        return (Location) this.get(key);
+    }
+
+    public OfflinePlayer getOfflinePlayer(String key) {
+        return (OfflinePlayer) this.get(key);
+    }
+
+    public Player getPlayer(String key) {
+        return (Player) this.get(key);
+    }
+
+    public List<Entity> getSelector(String key) {
+        return (List<Entity>) this.get(key);
     }
 }

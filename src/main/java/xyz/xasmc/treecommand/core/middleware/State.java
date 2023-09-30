@@ -1,6 +1,11 @@
-package xyz.xasmc.treecommand.core.state;
+package xyz.xasmc.treecommand.core.middleware;
 
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.RootNode;
 import xyz.xasmc.treecommand.core.node.marker.Executable;
@@ -9,37 +14,30 @@ import xyz.xasmc.treecommand.core.node.marker.Parseable;
 import java.util.*;
 
 public class State {
-    public RootNode rootNode; // 根节点
+    RootNode rootNode; // 根节点
+    CommandSender sender = null; // 指令发送者
+    String label = null; // 指令标签
+    String[] args = null; // 参数列表
+    List<BaseNode> executableNodeList = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
+    StateException exception = null; // 错误信息
+    int processedArgsCount = 0;// 处理完的参数数量
+    BaseNode lastNode = null;
+    Map<String, Object> state = new HashMap<>();// 状态Map
 
-    public CommandSender sender = null; // 指令发送者
-    public String label = null; // 指令标签
-    public String[] args = null; // 参数列表
+    // ===== exception =====
 
-    public List<BaseNode> executableNodeList = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
-    public BaseNode lastNode = null; // 结束节点(最后一个成功的节点)
+    protected void setException(BaseNode lastNode, BaseNode failedNode, StateExceptionReason exceptionReason, int failedStartIndex) {
+        this.lastNode = lastNode;
+        this.exception = new StateException(failedNode, exceptionReason, failedStartIndex);
+    }
 
-    public StateException exception = null; // 错误原因 成功则为null
-    public BaseNode failedNode = null; // 错误节点
-    public int failedStartIndex = -1;// 错误开始位置
-    public int processedArgc = 0;// 处理完的参数数量
+    protected void setException(BaseNode lastNode, StateExceptionReason exceptionReason, int failedStartIndex) {
+        this.lastNode = lastNode;
+        this.exception = new StateException(exceptionReason, failedStartIndex);
+    }
 
-    public Map<String, Object> state = new HashMap<>();// 状态Map
-
-    public boolean isSuccess() {
+    protected boolean isSuccess() {
         return this.exception == null;
-    }
-
-    protected void setException(BaseNode lastNode, BaseNode failedNode, StateException exceptionReason, int failedStartIndex) {
-        this.lastNode = lastNode;
-        this.failedNode = failedNode;
-        this.exception = exceptionReason;
-        this.failedStartIndex = failedStartIndex;
-    }
-
-    protected void setException(BaseNode lastNode, StateException exceptionReason, int failedStartIndex) {
-        this.lastNode = lastNode;
-        this.exception = exceptionReason;
-        this.failedStartIndex = failedStartIndex;
     }
 
     // ===== load =====
@@ -49,8 +47,7 @@ public class State {
      *
      * @param args 参数数组
      */
-    public boolean load(RootNode rootNode, String[] args, CommandSender sender, String label) {
-        this.reload();
+    protected boolean load(RootNode rootNode, String[] args, CommandSender sender, String label) {
         this.rootNode = rootNode;
         this.args = args;
         this.sender = sender;
@@ -65,14 +62,14 @@ public class State {
             }
             if (node.isLeafNode() && processingArgs.length != 0) {
                 // 没节点,还有参数,错误
-                this.setException(node, StateException.TOO_MANY_ARGS, this.processedArgc);
+                this.setException(node, StateExceptionReason.TOO_MANY_ARGS, this.processedArgsCount);
                 return false;
             }
             if (processingArgs.length == 0) {
                 // 没参数了
                 if (node.isLeafNode()) {
                     // 节点没有子节点
-                    this.lastNode = node;// 成功
+                    this.lastNode = node; // 成功
                     return true;
                 }
             }
@@ -91,10 +88,10 @@ public class State {
                             this.state.put(child.getNodeName(), ((Parseable) child).parseArgument(sender, processingArgs));
                         }
                         // 重新设置处理中的参数数组
-                        this.processedArgc += argsQuantity;
+                        this.processedArgsCount += argsQuantity;
                         processingArgs = Arrays.copyOfRange(processingArgs, argsQuantity, processingArgs.length);
                         // 清空错误信息
-                        this.setException(null, null, null, -1);
+                        this.exception = null;
                         // 下一层节点
                         node = child;
                         isParseSuccess = true;
@@ -103,7 +100,7 @@ public class State {
                         // 参数不足,不完整
                         // 添加错误信息,不返回错误
                         // 继续遍历下面的节点,如果后面的节点匹配成功会覆盖错误信息
-                        this.setException(node, child, StateException.NOT_COMPLETE, this.processedArgc);
+                        this.setException(node, child, StateExceptionReason.NOT_COMPLETE, this.processedArgsCount);
                         // 下一个节点
                         continue;// 不完整,换下一个子节点
                     }
@@ -130,11 +127,11 @@ public class State {
                     }
                     // 节点不可结束
                     // 参数过少
-                    this.setException(node, StateException.TOO_FEW_ARGS, this.processedArgc);
+                    this.setException(node, StateExceptionReason.TOO_FEW_ARGS, this.processedArgsCount);
                 } else {
                     // 还有未处理的参数
                     // 错误的参数
-                    this.setException(node, StateException.WRONG_ARGS, this.processedArgc);
+                    this.setException(node, StateExceptionReason.WRONG_ARGS, this.processedArgsCount);
                 }
                 return false;
             }
@@ -142,19 +139,29 @@ public class State {
 
     }
 
-    protected void reload() {
-        this.sender = null; // 指令发送者
-        this.label = null; // 指令标签
-        this.args = null; // 参数列表
+    // ===== state =====
 
-        this.executableNodeList = new ArrayList<>(); // 可执行节点列表(第一个元素一定是根节点)
-        this.lastNode = null; // 结束节点
+    public Block getBlock(String key) {
+        return (Block) this.state.get(key);
+    }
 
-        this.exception = null; // 错误原因 成功则为null
-        this.failedNode = null; // 错误节点
-        this.failedStartIndex = -1;// 错误开始位置
-        this.processedArgc = 0;// 处理完的参数数量
+    public String getEnum(String key) {
+        return (String) this.state.get(key);
+    }
 
-        this.state = new HashMap<>();// 状态Map
+    public Location getLocation(String key) {
+        return (Location) this.state.get(key);
+    }
+
+    public OfflinePlayer getOfflinePlayer(String key) {
+        return (OfflinePlayer) this.state.get(key);
+    }
+
+    public Player getPlayer(String key) {
+        return (Player) this.state.get(key);
+    }
+
+    public List<Entity> getSelector(String key) {
+        return (List<Entity>) this.state.get(key);
     }
 }
