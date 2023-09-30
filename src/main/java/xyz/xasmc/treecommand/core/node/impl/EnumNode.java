@@ -34,6 +34,6 @@ public class EnumNode extends BaseNode implements Parseable {
 
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
-        return 1;
+        return unprocessedArgs.length == 0 ? -1 : 1;
     }
 }
