@@ -14,7 +14,7 @@ import java.util.List;
 
 public abstract class BaseNode {
     protected String nodeName = null;
-    protected BaseNode parent = null;
+    protected BaseNode lastParent = null;
     protected List<BaseNode> children = new ArrayList<>();
     protected BaseNodeConfig config = null;
     protected Middleware middleware = (ctx, next) -> next.next();
@@ -27,7 +27,7 @@ public abstract class BaseNode {
      * @param child 子节点
      */
     public void addChild(BaseNode child) {
-        child.setParent(this);
+        child.setLastParent(this);
         this.children.add(child);
     }
 
@@ -279,7 +279,7 @@ public abstract class BaseNode {
      * @return 父节点
      */
     public BaseNode end() {
-        return this.parent;
+        return this.lastParent;
     }
 
     /**
@@ -291,57 +291,10 @@ public abstract class BaseNode {
         return this.isLeafNode();
     }
 
-    // ===== Tree =====
-
-    public BaseNode getParent() {
-        return this.parent;
-    }
+    // ===== Graph =====
 
     public List<BaseNode> getChildren() {
         return this.children;
-    }
-
-    public RootNode getRoot() {
-        BaseNode node = this;
-        while (!(node instanceof RootNode)) {
-            node = node.getParent();
-        }
-        return (RootNode) node;
-    }
-
-    public List<BaseNode> getPath() {
-        List<BaseNode> pathList = new ArrayList<>();
-        BaseNode node = this;
-        while (true) {
-            pathList.add(0, node);
-            if (node instanceof RootNode) {
-                break;
-            } else {
-                node = node.getParent();
-            }
-        }
-        return pathList;
-    }
-
-    public int getDepth() {
-        int level = 0;
-        BaseNode node = this;
-        while (true) {
-            if (node instanceof RootNode) {
-                return level;
-            } else {
-                level++;
-                node = node.getParent();
-            }
-        }
-    }
-
-    public boolean isRootNode() {
-        return this.parent == null;
-    }
-
-    public boolean isChildNode() {
-        return !this.isRootNode() && !this.isLeafNode();
     }
 
     public boolean isLeafNode() {
@@ -358,8 +311,8 @@ public abstract class BaseNode {
         this.nodeName = name;
     }
 
-    public void setParent(BaseNode parent) {
-        this.parent = parent;
+    public void setLastParent(BaseNode lastParent) {
+        this.lastParent = lastParent;
     }
 
     // ===== Executable =====
