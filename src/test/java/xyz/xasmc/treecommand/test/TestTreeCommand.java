@@ -84,7 +84,8 @@ public class TestTreeCommand extends JavaPlugin {
                     ctx.getSender().sendMessage(String.join("; ", entityTypeList));
                     next.next();
                 })
-                .addArgumentAndEnd(ArgumentType.SELECTOR, "selector")
+                        .addArgumentAndEnd(ArgumentType.SELECTOR, "selector")
+                .end()
         ;
         // @formatter:on
 
