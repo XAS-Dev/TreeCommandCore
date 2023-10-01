@@ -33,15 +33,15 @@ public class Context extends BaseContext {
         return this.messageToSender;
     }
 
-    public void addMessageToSender(BaseComponent message) {
+    public void addMessageToSender(BaseComponent... messages) {
         if (!this.messageToSender.isEmpty()) this.messageToSender.add(new TextComponent("\n"));
-        this.messageToSender.add(message);
+        this.messageToSender.addAll(Arrays.asList(messages));
 
     }
 
-    public void addMessageToSender(BaseComponent message, boolean warp) {
+    public void addMessageToSender(boolean warp, BaseComponent... messages) {
         if (!this.messageToSender.isEmpty() & warp) this.messageToSender.add(new TextComponent("\n"));
-        this.messageToSender.add(message);
+        this.messageToSender.addAll(Arrays.asList(messages));
 
     }
 
@@ -51,7 +51,7 @@ public class Context extends BaseContext {
 
     }
 
-    public void addMessageToSender(String message, boolean warp) {
+    public void addMessageToSender(boolean warp, String message) {
         if (!this.messageToSender.isEmpty() & warp) this.messageToSender.add(new TextComponent("\n"));
         this.messageToSender.addAll(Arrays.asList(TextComponent.fromLegacyText(message)));
 
@@ -63,15 +63,15 @@ public class Context extends BaseContext {
         return this.messageToBroadcast;
     }
 
-    public void addMessageToBroadcast(BaseComponent message) {
+    public void addMessageToBroadcast(BaseComponent... messages) {
         if (!this.messageToBroadcast.isEmpty()) this.messageToBroadcast.add(new TextComponent("\n"));
-        this.messageToBroadcast.add(message);
+        this.messageToBroadcast.addAll(Arrays.asList(messages));
 
     }
 
-    public void addMessageToBroadcast(BaseComponent message, boolean warp) {
+    public void addMessageToBroadcast(boolean warp, BaseComponent... messages) {
         if (!this.messageToBroadcast.isEmpty() & warp) this.messageToBroadcast.add(new TextComponent("\n"));
-        this.messageToBroadcast.add(message);
+        this.messageToBroadcast.addAll(Arrays.asList(messages));
 
     }
 
@@ -81,7 +81,7 @@ public class Context extends BaseContext {
 
     }
 
-    public void addMessageToBroadcast(String message, boolean warp) {
+    public void addMessageToBroadcast(boolean warp, String message) {
         if (!this.messageToBroadcast.isEmpty() & warp) this.messageToBroadcast.add(new TextComponent("\n"));
         this.messageToBroadcast.addAll(Arrays.asList(TextComponent.fromLegacyText(message)));
 
