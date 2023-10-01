@@ -36,25 +36,21 @@ public class Context extends BaseContext {
     public void addMessageToSender(BaseComponent... messages) {
         if (!this.messageToSender.isEmpty()) this.messageToSender.add(new TextComponent("\n"));
         this.messageToSender.addAll(Arrays.asList(messages));
-
     }
 
     public void addMessageToSender(boolean warp, BaseComponent... messages) {
         if (!this.messageToSender.isEmpty() & warp) this.messageToSender.add(new TextComponent("\n"));
         this.messageToSender.addAll(Arrays.asList(messages));
-
     }
 
     public void addMessageToSender(String message) {
         if (!this.messageToSender.isEmpty()) this.messageToSender.add(new TextComponent("\n"));
         this.messageToSender.addAll(Arrays.asList(TextComponent.fromLegacyText(message)));
-
     }
 
     public void addMessageToSender(boolean warp, String message) {
         if (!this.messageToSender.isEmpty() & warp) this.messageToSender.add(new TextComponent("\n"));
         this.messageToSender.addAll(Arrays.asList(TextComponent.fromLegacyText(message)));
-
     }
 
     // ===== message to broadcast =====
@@ -66,24 +62,20 @@ public class Context extends BaseContext {
     public void addMessageToBroadcast(BaseComponent... messages) {
         if (!this.messageToBroadcast.isEmpty()) this.messageToBroadcast.add(new TextComponent("\n"));
         this.messageToBroadcast.addAll(Arrays.asList(messages));
-
     }
 
     public void addMessageToBroadcast(boolean warp, BaseComponent... messages) {
         if (!this.messageToBroadcast.isEmpty() & warp) this.messageToBroadcast.add(new TextComponent("\n"));
         this.messageToBroadcast.addAll(Arrays.asList(messages));
-
     }
 
     public void addMessageToBroadcast(String message) {
         if (!this.messageToBroadcast.isEmpty()) this.messageToBroadcast.add(new TextComponent("\n"));
         this.messageToBroadcast.addAll(Arrays.asList(TextComponent.fromLegacyText(message)));
-
     }
 
     public void addMessageToBroadcast(boolean warp, String message) {
         if (!this.messageToBroadcast.isEmpty() & warp) this.messageToBroadcast.add(new TextComponent("\n"));
         this.messageToBroadcast.addAll(Arrays.asList(TextComponent.fromLegacyText(message)));
-
     }
 }
