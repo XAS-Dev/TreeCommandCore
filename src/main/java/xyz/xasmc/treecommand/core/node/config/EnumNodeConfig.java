@@ -8,6 +8,9 @@ public class EnumNodeConfig extends BaseNodeConfig {
     public List<String> enmuList = new ArrayList<>();
     public boolean caseSensitive = true;
 
+    public EnumNodeConfig() {
+    }
+
     public EnumNodeConfig(String[] enums) {
         this.enmuList.addAll(Arrays.asList(enums));
     }

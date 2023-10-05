@@ -57,8 +57,7 @@ public abstract class BaseNode {
      * @return 新建的SubCommandNode子节点
      */
     public SubCommandNode addSubCommand(String label) {
-        SubCommandNodeConfig config = new SubCommandNodeConfig();
-        config.label = label;
+        SubCommandNodeConfig config = new SubCommandNodeConfig(label);
         // setup child
         SubCommandNode child = new SubCommandNode();
         child.setConfig(config);
