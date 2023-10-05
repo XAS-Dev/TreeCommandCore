@@ -43,8 +43,11 @@ public class OfflinePlayerNode extends BaseNode implements Parsable {
     @Nullable
     @Override
     public Object parseArgument(CommandSender sender, String[] args) {
-        // TODO
-        return Bukkit.getOfflinePlayer(args[0]);
+        OfflinePlayer result = Bukkit.getOfflinePlayer(args[0]);
+        if (result.hasPlayedBefore() || !this.config.isCheckPlayedBefore) {
+            return result;
+        }
+        return null;
     }
 
     // ===== custom =====

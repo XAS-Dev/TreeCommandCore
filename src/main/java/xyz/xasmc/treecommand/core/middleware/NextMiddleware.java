@@ -10,7 +10,6 @@ public class NextMiddleware {
     Middleware middleware;
 
     public NextMiddleware() {
-
     }
 
     public NextMiddleware(Context context, BaseNode node, Middleware middleware, NextMiddleware nextMiddleware) {

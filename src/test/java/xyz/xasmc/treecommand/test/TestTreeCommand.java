@@ -20,7 +20,7 @@ public class TestTreeCommand extends JavaPlugin {
         this.getLogger().info("TestTreeCommand 已加载");
 
         TreeCommand testTreeCommand = new TreeCommand((ctx, next) -> {
-            ctx.addMessageToSender(ChatColor.AQUA + "" + ChatColor.BOLD + "===== testTreeCommand =====");
+            ctx.addMessageToSender(String.format("%s%s===== testTreeCommand =====", ChatColor.AQUA.toString(), ChatColor.BOLD.toString()));
             next.next();
         });
 
