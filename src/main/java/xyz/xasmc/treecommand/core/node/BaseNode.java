@@ -270,6 +270,19 @@ public abstract class BaseNode {
         return this.addExecuteNode(child);
     }
 
+    // ===== TemplateNode =====
+
+    /**
+     * 使用模版,返回此节点
+     *
+     * @param template 模版
+     * @return this
+     */
+    public BaseNode useTemplate(BaseNode template) {
+        this.addChild(template);
+        return this;
+    }
+
     // ===== CommandTree =====
 
     /**
