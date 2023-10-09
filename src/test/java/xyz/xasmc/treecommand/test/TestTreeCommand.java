@@ -103,7 +103,6 @@ public class TestTreeCommand extends JavaPlugin {
         ;
         // @formatter:on
 
-
         // 设置完将其绑定在指令上
         this.getCommand("testtreecommand").setExecutor(testTreeCommand);
         this.getCommand("testtreecommand").setTabCompleter(testTreeCommand);

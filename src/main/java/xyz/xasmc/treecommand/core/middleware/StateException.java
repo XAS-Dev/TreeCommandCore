@@ -7,7 +7,6 @@ public class StateException extends RuntimeException {
     protected BaseNode failedNode = null; // 错误节点
     protected int failedStartIndex;// 错误开始位置
 
-
     protected StateException(BaseNode failedNode, StateExceptionReason exceptionReason, int failedStartIndex) {
         this.failedNode = failedNode;
         this.exception = exceptionReason;
