@@ -26,7 +26,8 @@ public class State {
 
     // ===== exception =====
 
-    protected void setException(BaseNode lastNode, BaseNode failedNode, StateExceptionReason exceptionReason, int failedStartIndex) {
+    protected void setException(BaseNode lastNode, BaseNode failedNode, StateExceptionReason exceptionReason,
+            int failedStartIndex) {
         this.lastNode = lastNode;
         this.exception = new StateException(failedNode, exceptionReason, failedStartIndex);
     }
@@ -85,7 +86,8 @@ public class State {
                         if (child instanceof Parsable) {
                             // 可处理的
                             // 参数足够,处理参数并添加到状态Map中
-                            this.state.put(child.getNodeName(), ((Parsable) child).parseArgument(sender, processingArgs));
+                            this.state.put(child.getNodeName(),
+                                    ((Parsable) child).parseArgument(sender, processingArgs));
                         }
                         // 重新设置处理中的参数数组
                         this.processedArgsCount += argsQuantity;
@@ -161,6 +163,7 @@ public class State {
         return (Player) this.state.get(key);
     }
 
+    @SuppressWarnings("unchecked")
     public List<Entity> getSelector(String key) {
         return (List<Entity>) this.state.get(key);
     }

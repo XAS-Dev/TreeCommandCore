@@ -31,17 +31,21 @@ public class OfflinePlayerNode extends BaseNode implements Parsable {
 
     @Override
     public int getArgsQuantity(String[] unprocessedArgs) {
-        if (unprocessedArgs.length == 0) return -1;
-        if (!this.config.isCheckPlayerName) return 1;
+        if (unprocessedArgs.length == 0)
+            return -1;
+        if (!this.config.isCheckPlayerName)
+            return 1;
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
             String name = offlinePlayer.getName();
-            if (name != null && name.equalsIgnoreCase(unprocessedArgs[0])) return 1;
+            if (name != null && name.equalsIgnoreCase(unprocessedArgs[0]))
+                return 1;
         }
         return -1;
     }
 
     @Nullable
     @Override
+    @SuppressWarnings("deprecation")
     public Object parseArgument(CommandSender sender, String[] args) {
         OfflinePlayer result = Bukkit.getOfflinePlayer(args[0]);
         if (result.hasPlayedBefore() || !this.config.isCheckPlayedBefore) {

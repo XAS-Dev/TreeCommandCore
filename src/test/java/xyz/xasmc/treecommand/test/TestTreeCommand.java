@@ -53,7 +53,7 @@ public class TestTreeCommand extends JavaPlugin {
             List<Entity> entities = ctx.getSelector("selector");
             List<String> entityTypeList = new ArrayList<>(entities.size());
             for (Entity entity : entities) {
-                entityTypeList.add(entity.getType().name());
+                entityTypeList.add(entity.getName());
             }
             ctx.addMessageToSender(String.join("; ", entityTypeList));
             next.next();

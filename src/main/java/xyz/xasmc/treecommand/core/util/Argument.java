@@ -1,10 +1,12 @@
 package xyz.xasmc.treecommand.core.util;
 
+import org.jetbrains.annotations.NotNull;
 import xyz.xasmc.treecommand.core.node.ArgumentType;
 import xyz.xasmc.treecommand.core.node.BaseNode;
 import xyz.xasmc.treecommand.core.node.impl.*;
 
 public abstract class Argument {
+    @NotNull
     public static BaseNode getArgumentByType(ArgumentType type) {
         switch (type) {
             case BLOCK:

@@ -97,6 +97,7 @@ public abstract class BaseContext {
         return (Player) this.get(key);
     }
 
+    @SuppressWarnings("unchecked")
     public List<Entity> getSelector(String key) {
         return (List<Entity>) this.get(key);
     }
