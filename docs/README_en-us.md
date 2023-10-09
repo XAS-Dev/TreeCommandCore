@@ -1,17 +1,17 @@
 # TreeCommandCore
 
-TreeCommand 核心部分.
+Core part of TreeCommand.
 
-TreeCommand 是一个 Bukkit 依赖插件, 用于提供接口以简化 Bukkit 插件中编写指令部分的代码. 此项目叫做“TreeCommand”但是此项目使用图数据结构处理指令.
+TreeCommand is a Bukkit dependency plugin that provides an interface to simplify the command-writing portion of Bukkit plugins. The project is named "TreeCommand," but it uses a tree data structure to handle commands.
 
-## 多语言
+## Multi-language
 
 - [简体中文](/README.md)
 - [English](/docs/README_en-us.md)
 
-## 开始使用
+## Getting Started
 
-要在你的 Bukkit 插件项目中使用 TreeCommand, 应该将“TreeCommandCore”作为依赖添加到 `pom.xml` 中. 首先, 添加 XAS-Dev 的 Maven 源:
+To use TreeCommand in your Bukkit plugin project, you should add "TreeCommandCore" as a dependency in your `pom.xml`. First, add XAS-Dev's Maven repository:
 
 ```xml
 <repository>
@@ -20,7 +20,7 @@ TreeCommand 是一个 Bukkit 依赖插件, 用于提供接口以简化 Bukkit �
 </repository>
 ```
 
-接下来, 添加 TreeCommandCore 作为依赖:
+Next, add TreeCommandCore as a dependency:
 
 ```xml
 <dependency>
@@ -31,18 +31,18 @@ TreeCommand 是一个 Bukkit 依赖插件, 用于提供接口以简化 Bukkit �
 </dependency>
 ```
 
-之后，您应该将该项目的 Bukkit 插件——TreeCommandLib 添加到插件依赖项列表中。编辑`plugin.yml`
+After that, you should add the TreeCommandLib, the Bukkit plugin of this project, to the plugin's dependencies. Edit `plugin.yml`:
 
 ```yaml
 softdepend:
   - "TreeCommandLib"
 ```
 
-如果你的项目依赖 TreeCommand, 请确保在服务器中使用你的插件前服务器中安装了[TreeCommandLib](https://github.com/XAS-Dev/TreeCommandLib)插件
+If your project depends on TreeCommand, make sure [TreeCommandLib](https://github.com/XAS-Dev/TreeCommandLib) plugin is installed on the server before using your plugin.
 
-## 用法示例
+## Usage Example
 
-以下是如何在 Bukkit 插件中使用 TreeCommand 的示例：
+Here is an example of how to use TreeCommand in a Bukkit plugin:
 
 ```java
 import org.bukkit.ChatColor;
@@ -62,14 +62,14 @@ import java.util.List;
 public class TestTreeCommand extends JavaPlugin {
     @Override
     public void onEnable() {
-        this.getLogger().info("TestTreeCommand 已加载");
+        this.getLogger().info("TestTreeCommand has been loaded");
 
         TreeCommand testTreeCommand = new TreeCommand((ctx, next) -> {
             ctx.addMessageToSender(String.format("%s%s===== testTreeCommand =====", ChatColor.AQUA, ChatColor.BOLD));
             next.next();
         });
 
-        // 方法1,先创建模版再拼接
+        // Method 1, create a template first, then append
         // Location
         SubCommandNode locationSubCommand = Template.createSubCommand("location", (ctx, next) -> {
             ctx.addMessageToSender("you selected a location: " + ctx.getLocation("location").toString());
@@ -105,42 +105,42 @@ public class TestTreeCommand extends JavaPlugin {
         });
         selectorSubCommand.addArgumentAndEnd(ArgumentType.SELECTOR, "selector");
 
-        // 方法2,直接构建整个指令
+        // Method 2, directly build the entire command
         // @formatter:off
         testTreeCommand
-                .addExecuteNode((ctx, next) -> { // 添加一个执行节点,处理到该节点时执行对应方法
+                .addExecuteNode((ctx, next) -> { // Add an execution node, execute the corresponding method when reached
                     ctx.addMessageToSender(ChatColor.GREEN + "✔ You successfully executed this command");
-                    if (ctx.isEndHere()){ // 判断指令是否在这里结束, 在这里结束即为没有输入任何子指令
-                        ctx.addMessageToSender("You did not input any sub commands");
+                    if (ctx.isEndHere()){ // Check if the command ends here, meaning no sub-commands were inputted
+                        ctx.addMessageToSender("You did not input any sub-commands");
                     }
-                    next.next(); // 处理下一层的节点
+                    next.next(); // Process the next level of nodes
                 })
-                .addTerminalNode() // 添加一个可结束节点,代表可以在此处结束指令
-                .addSubCommand("help", (ctx, next) -> { // 添加子指令,返回新建的子指令节点
+                .addTerminalNode() // Add a terminal node, represents the command can end here
+                .addSubCommand("help", (ctx, next) -> { // Add a sub-command, return the newly created sub-command node
                     ctx.addMessageToSender("help message");
                     next.next();
-                }).end() // 使用end()结束对子节点的设置
-                .addSubCommandAndEnd("awa", (ctx, next) -> { // 简化写法,添加子指令节点,直接结束对子指令节点设置
+                }).end() // Use end() to end the configuration of sub-nodes
+                .addSubCommandAndEnd("awa", (ctx, next) -> { // Simplified syntax, add a sub-command node and directly end the configuration of sub-command node
                     ctx.addMessageToSender("qwq");
                     next.next();
                 })
                 .addSubCommand("player", (ctx,next)->{
                     ctx.addMessageToSender("you selected a player");
-                    Player player = ctx.get("player", Player.class); // 根据节点名获取参数处理结果
+                    Player player = ctx.get("player", Player.class); // Get the parameter processing result based on the node name
                     player.chat("selected me!");
                     next.next();
                 })
-                        .addArgument(ArgumentType.PLAYER, "player").end() // 为子指令节点添加参数节点;使用end()结束对参数节点的设置
-                .end() // 使用end()结束对子节点的设置
+                        .addArgument(ArgumentType.PLAYER, "player").end() // Add a parameter node for the sub-command node; use end() to end the configuration of the parameter node
+                .end() // Use end() to end the configuration of sub-nodes
                 .addSubCommand("offline_player", (ctx, next) -> {
                     ctx.addMessageToSender("you selected an offline player");
-                    OfflinePlayer player = ctx.getOfflinePlayer("offline_player"); // 简化写法
+                    OfflinePlayer player = ctx.getOfflinePlayer("offline_player"); // Simplified syntax
                     ctx.addMessageToSender("his or her name is " + player.getName() + " and UUID is " + player.getUniqueId());
                     next.next();
                 })
-                        .addArgumentAndEnd(ArgumentType.OFFLINE_PLAYER, "offline_player") // 简化写法,为子指令节点添加参数节点，直接结束对参数节点的设置
+                        .addArgumentAndEnd(ArgumentType.OFFLINE_PLAYER, "offline_player") // Simplified syntax, add a parameter node for the sub-command node and directly end the configuration of the parameter node
                 .end()
-                .useTemplate(locationSubCommand) // 使用刚才创建的模版
+                .useTemplate(locationSubCommand) // Use the template created earlier
                 .useTemplate(blockSubCommand)
                 .useTemplate(blockSubCommand)
                 .useTemplate(enumSubCommand)
@@ -149,13 +149,14 @@ public class TestTreeCommand extends JavaPlugin {
         // @formatter:on
 
 
-        // 设置完成将其绑定在指令上
+        // Set it as the executor and tab completer for the command
         this.getCommand("testtreecommand").setExecutor(testTreeCommand);
         this.getCommand("testtreecommand").setTabCompleter(testTreeCommand);
     }
 }
+
 ```
 
-可以在[测试代码](./src/test/java/xyz/xasmc/treecommand/test/TestTreeCommand.java)中找到具体示例.
+A specific example can be found in [test code](./src/test/java/xyz/xasmc/treecommand/test/TestTreeCommand.java).
 
-请随意定制和扩展此示例, 以满足您的特定插件需求.
+Feel free to customize and extend this example to meet your specific plugin requirements.
