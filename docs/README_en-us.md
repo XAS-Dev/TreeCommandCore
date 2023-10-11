@@ -110,7 +110,7 @@ public class TestTreeCommand extends JavaPlugin {
         testTreeCommand
                 .addExecuteNode((ctx, next) -> { // Add an execution node, execute the corresponding method when reached
                     ctx.addMessageToSender(ChatColor.GREEN + "✔ You successfully executed this command");
-                    if (ctx.isEndHere()){ // Check if the command ends here, meaning no sub-commands were inputted
+                    if (ctx.isEndHere()) { // Check if the command ends here, meaning no sub-commands were inputted
                         ctx.addMessageToSender("You did not input any sub-commands");
                     }
                     next.next(); // Process the next level of nodes
@@ -124,7 +124,7 @@ public class TestTreeCommand extends JavaPlugin {
                     ctx.addMessageToSender("qwq");
                     next.next();
                 })
-                .addSubCommand("player", (ctx,next)->{
+                .addSubCommand("player", (ctx, next) -> {
                     ctx.addMessageToSender("you selected a player");
                     Player player = ctx.get("player", Player.class); // Get the parameter processing result based on the node name
                     player.chat("selected me!");
@@ -157,6 +157,6 @@ public class TestTreeCommand extends JavaPlugin {
 
 ```
 
-A specific example can be found in [test code](./src/test/java/xyz/xasmc/treecommand/test/TestTreeCommand.java).
+A specific example can be found in [test code](/src/test/java/xyz/xasmc/treecommand/test/TestTreeCommand.java).
 
 Feel free to customize and extend this example to meet your specific plugin requirements.

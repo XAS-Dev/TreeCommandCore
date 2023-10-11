@@ -110,7 +110,7 @@ public class TestTreeCommand extends JavaPlugin {
         testTreeCommand
                 .addExecuteNode((ctx, next) -> { // 添加一个执行节点,处理到该节点时执行对应方法
                     ctx.addMessageToSender(ChatColor.GREEN + "✔ You successfully executed this command");
-                    if (ctx.isEndHere()){ // 判断指令是否在这里结束, 在这里结束即为没有输入任何子指令
+                    if (ctx.isEndHere()) { // 判断指令是否在这里结束, 在这里结束即为没有输入任何子指令
                         ctx.addMessageToSender("You did not input any sub commands");
                     }
                     next.next(); // 处理下一层的节点
@@ -124,7 +124,7 @@ public class TestTreeCommand extends JavaPlugin {
                     ctx.addMessageToSender("qwq");
                     next.next();
                 })
-                .addSubCommand("player", (ctx,next)->{
+                .addSubCommand("player", (ctx, next) -> {
                     ctx.addMessageToSender("you selected a player");
                     Player player = ctx.get("player", Player.class); // 根据节点名获取参数处理结果
                     player.chat("selected me!");
@@ -156,6 +156,6 @@ public class TestTreeCommand extends JavaPlugin {
 }
 ```
 
-可以在[测试代码](./src/test/java/xyz/xasmc/treecommand/test/TestTreeCommand.java)中找到具体示例.
+可以在[测试代码](/src/test/java/xyz/xasmc/treecommand/test/TestTreeCommand.java)中找到具体示例.
 
 请随意定制和扩展此示例, 以满足您的特定插件需求.
